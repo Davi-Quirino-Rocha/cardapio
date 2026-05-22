@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2024 Cardápio.io. Todos os direitos reservados.</p>
+      <p>© 2026 Cardápio.io. Todos os direitos reservados.</p>
     </div>
   </footer>
 </template>

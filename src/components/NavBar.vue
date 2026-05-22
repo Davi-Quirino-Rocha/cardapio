@@ -14,7 +14,7 @@
         <li><a href="#contato">Contato</a></li>
       </ul>
 
-      <button class="btn-entrar">Entrar</button>
+      <button class="btn-entrar" @click="$router.push('/login')">Entrar</button>
     </div>
   </nav>
 </template>
@@ -60,11 +60,13 @@ export default {
 }
 
 .nav-links {
+  border-radius: 30px;
+  border: 2px solid gray;
   display: flex;
   list-style: none;
   gap: 30px;
   margin: 0;
-  padding: 0;
+  padding: 15px 30px;
 }
 
 .nav-links a {
