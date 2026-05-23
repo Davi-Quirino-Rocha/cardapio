@@ -1,22 +1,25 @@
 <template>
-  <div id="app">
-    <NavBar />
-    <router-view />
-    <AppFooter />
-  </div>
+
+  <NavBar v-if="!ocultarLayout" />
+
+  <router-view />
+
+  <AppFooter v-if="!ocultarLayout" />
+
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
 import NavBar from './components/NavBar.vue'
 import AppFooter from './components/AppFooter.vue'
 
-export default {
-  name: 'app',
-  components: {
-    NavBar,
-    AppFooter
-  }
-}
+const route = useRoute()
+
+const ocultarLayout = computed(() => {
+  return ['/login', '/cadastro'].includes(route.path)
+})
 </script>
 
 <style>

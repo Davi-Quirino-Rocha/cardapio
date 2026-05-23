@@ -66,11 +66,7 @@ display:flex;
 justify-content:center;
 align-items:center;
 
-background:linear-gradient(
-135deg,
-#f9e9ea,
-#edf3ff
-);
+background: linear-gradient(135deg, #FDDFE1 0%, #f5f5f5 50%, #D3E2FB 100%);
 }
 
 .login-card{
