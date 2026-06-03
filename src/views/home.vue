@@ -5,9 +5,9 @@
       <div class="hero-content">
         <h1>Crie e gerencie o cardápio digital do seu restaurante com autonomia</h1>
         <p>Atualize pratos, categorias, identidade visual e publique seu menu por link e QR Code sem depender de programador.</p>
-        <button class="btn-primary">Criar conta grátis</button>
+        <button class="btn-primary" @click="$router.push('/login')">Criar conta grátis</button>
       </div>
-      
+     
       <div class="hero-images">
         <img src="../assets/notebook.svg" alt="Cardápio Digital">
         <img src="../assets/celular.svg" alt="Cardápio Digital Mobile">
@@ -134,7 +134,7 @@
     <section class="cta">
       <h2>Pronto para modernizar seu restaurante?</h2>
       <p>Junte-se a mais de 1.500 restaurantes que já usam o Cardápio.io</p>
-      <button class="btn-primary">Juntar-se</button>
+      <button class="btn-primary" @click="$router.push('/login')">Juntar-se</button>
     </section>
   </div>
 </template>

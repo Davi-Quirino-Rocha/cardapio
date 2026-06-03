@@ -1,3 +1,4 @@
+
 <template>
   <aside class="sidebar">
     <div class="logo-area">
@@ -12,15 +13,15 @@
         :to="item.path" 
         class="menu-item"
         :class="{ active: isActive(item.path) }"
-      >
-        <span class="icon">{{ item.icon }}</span>
+        >
+        <img :src="item.icon" :alt="item.label" class="icon" />
         <span>{{ item.label }}</span>
       </router-link>
     </nav>
 
     <div class="sidebar-footer">
       <button class="btn-logout" @click="handleLogout">
-        <span class="icon">🚪</span>
+        <img src="../assets/PortaFundos.svg" alt="Porta" class="icon" />
         <span>Sair</span>
       </button>
     </div>
@@ -28,39 +29,46 @@
 </template>
 
 <script>
-import { useRoute } from 'vue-router'
+  import { useRoute } from 'vue-router'
 
-export default {
-  name: 'AppSidebar',
-  setup() {
-    const route = useRoute()
+  import dashboardIcon from '@/assets/DashBoard.svg'
+  import categoriasIcon from '@/assets/PastasCinzas.svg'
+  import pratosIcon from '@/assets/Garfo.svg'
+  import personalizacaoIcon from '@/assets/Pintura.svg'
+  import restauranteIcon from '@/assets/Casa.svg'
+  import qrIcon from '@/assets/QRcode.svg'
+  import previewIcon from '@/assets/OlhoCinza.svg'
 
-    const menuItems = [
-      { path: '/dashboard', label: 'Dashboard', icon: '📊' },
-      { path: '/categorias', label: 'Categorias', icon: '📁' },
-      { path: '/pratos', label: 'Pratos', icon: '🍽️' },
-      { path: '/personalizacao', label: 'Personalizar', icon: '🎨' },
-      { path: '/dados-restaurante', label: 'Dados do Restaurante', icon: '🏠' },
-      { path: '/qrcode', label: 'Qr Code', icon: '📱' },
-      { path: '/preview', label: 'Preview', icon: '👁️' }
-    ]
+  export default {
+    name: 'AppSidebar',
+    setup() {
+      const route = useRoute()
 
-    const isActive = (path) => {
-      return route.path === path
-    }
+      const menuItems = [
+        { path: '/dashboard', label: 'Dashboard', icon: dashboardIcon },
+        { path: '/categorias', label: 'Categorias', icon: categoriasIcon },
+        { path: '/pratos', label: 'Pratos', icon: pratosIcon },
+        { path: '/personalizacao', label: 'Personalizar', icon: personalizacaoIcon },
+        { path: '/dados-restaurante', label: 'Dados do Restaurante', icon: restauranteIcon },
+        { path: '/qrcode', label: 'Qr Code', icon: qrIcon },
+        { path: '/preview', label: 'Preview', icon: previewIcon }
+      ]
 
-    return {
-      menuItems,
-      isActive
-    }
-  },
-  methods: {
-    handleLogout() {
-      this.$router.push('/login')
+      const isActive = (path) => route.path === path
+
+      return {
+        menuItems,
+        isActive
+      }
+    },
+    methods: {
+      handleLogout() {
+        this.$router.push('/login')
+      }
     }
   }
-}
 </script>
+
 
 <style scoped>
 /* SIDEBAR */
@@ -129,7 +137,9 @@ export default {
 }
 
 .menu-item .icon {
-  font-size: 18px;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .sidebar-footer {

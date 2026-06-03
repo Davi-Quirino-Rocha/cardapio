@@ -1,7 +1,7 @@
 <template>
   <div class="page-wrapper">
     <div class="alert-card">
-      <div class="alert-icon">✓</div>
+      <div class="alert-icon"><img src="../assets/Correto.svg" alt="Correto"></div>
       <div class="alert-content">
         <h3>Cardápio publicado</h3>
         <p>Seu cardápio está ativo e acessível para os clientes</p>
@@ -15,28 +15,28 @@
     <!-- Stats Grid -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-icon blue">📁</div>
+        <div class="stat-icon blue"><img src="../assets/Pastas.svg" alt="pasta"></div>
         <div class="stat-info">
           <p class="stat-label">Categorias</p>
           <p class="stat-number">8</p>
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon red">✕</div>
+        <div class="stat-icon red"><img src="../assets/Frame.svg" alt="garfo"></div>
         <div class="stat-info">
           <p class="stat-label">Pratos Totais</p>
           <p class="stat-number">42</p>
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon green">●</div>
+        <div class="stat-icon green"><img src="../assets/Olho.svg" alt="olho"></div>
         <div class="stat-info">
           <p class="stat-label">Pratos Ativos</p>
           <p class="stat-number">38</p>
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon gray">⊗</div>
+        <div class="stat-icon gray"><img src="../assets/OlhoRisco.svg" alt="risco"></div>
         <div class="stat-info">
           <p class="stat-label">Pratos Inativos</p>
           <p class="stat-number">4</p>
