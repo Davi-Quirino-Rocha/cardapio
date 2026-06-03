@@ -3,23 +3,56 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/home.vue'
 import LoginPage from '../views/LoginPage.vue'
 import RegisterPage from '../views/RegisterPage.vue'
+import DashboardLayout from '../views/DashboardLayout.vue'
 import Dashboard from '../views/DashBoard.vue'
+import Categorias from '../views/Categorias.vue'
+
 const routes = [
   {
-    path:'/',
+    path: '/',
     component: Home
   },
   {
-    path:'/login',
+    path: '/login',
     component: LoginPage
   },
   {
-    path:'/cadastro',
+    path: '/cadastro',
     component: RegisterPage
   },
   {
-    path:'/dashboard',
-    component: Dashboard
+    path: '/dashboard',
+    component: DashboardLayout,
+    children: [
+      {
+        path: '',
+        component: Dashboard
+      },
+      {
+        path: '/categorias',
+        component: Categorias
+      },
+      {
+        path: '/pratos',
+        component: { template: '<div class="page-wrapper"><h2>Pratos</h2><p>Página em construção</p></div>' }
+      },
+      {
+        path: '/personalizacao',
+        component: { template: '<div class="page-wrapper"><h2>Personalizar</h2><p>Página em construção</p></div>' }
+      },
+      {
+        path: '/dados-restaurante',
+        component: { template: '<div class="page-wrapper"><h2>Dados do Restaurante</h2><p>Página em construção</p></div>' }
+      },
+      {
+        path: '/qrcode',
+        component: { template: '<div class="page-wrapper"><h2>QR Code</h2><p>Página em construção</p></div>' }
+      },
+      {
+        path: '/preview',
+        component: { template: '<div class="page-wrapper"><h2>Preview</h2><p>Página em construção</p></div>' }
+      }
+    ]
   }
 ]
 

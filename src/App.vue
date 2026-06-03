@@ -18,7 +18,7 @@ import AppFooter from './components/AppFooter.vue'
 const route = useRoute()
 
 const ocultarLayout = computed(() => {
-  return ['/login', '/cadastro', '/dashboard'].includes(route.path)
+  return ['/login', '/cadastro', '/dashboard', '/categorias'].includes(route.path)
 })
 
 

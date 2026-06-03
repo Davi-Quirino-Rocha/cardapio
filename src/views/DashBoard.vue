@@ -1,168 +1,146 @@
 <template>
-  <div class="dashboard-layout">
-    <!-- Sidebar -->
-    <Sidebar />
-
-    <div class="main-content">
-      <!-- Top Header -->
-      <div class="top-header">
-        <div class="header-left">
-          <h1>Dashboard</h1>
+  <div class="page-wrapper">
+    <div class="alert-card">
+      <div class="alert-icon">✓</div>
+      <div class="alert-content">
+        <h3>Cardápio publicado</h3>
+        <p>Seu cardápio está ativo e acessível para os clientes</p>
+        <div class="alert-buttons">
+          <button class="btn-secondary">Ver cardápio público</button>
+          <button class="btn-secondary">Baixar QR Code</button>
         </div>
-        <div class="header-right">
-          <a href="#" class="header-link">Ver cardápio público</a>
-          <button class="btn-sair" @click="handleLogout">
-            <span class="icon">🚪</span>
-            <span>Sair</span>
-          </button>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">📁</div>
+        <div class="stat-info">
+          <p class="stat-label">Categorias</p>
+          <p class="stat-number">8</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red">✕</div>
+        <div class="stat-info">
+          <p class="stat-label">Pratos Totais</p>
+          <p class="stat-number">42</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">●</div>
+        <div class="stat-info">
+          <p class="stat-label">Pratos Ativos</p>
+          <p class="stat-number">38</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon gray">⊗</div>
+        <div class="stat-info">
+          <p class="stat-label">Pratos Inativos</p>
+          <p class="stat-number">4</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+      <!-- Left Column -->
+      <div class="left-column">
+        <!-- Recent Dishes -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Últimos pratos editados</h3>
+            <a href="#" class="link">Ver todos</a>
+          </div>
+          <div class="card-body">
+            <div class="dish-item" v-for="dish in recentDishes" :key="dish.id">
+              <div class="dish-info">
+                <p class="dish-name">{{ dish.name }}</p>
+                <p class="dish-category">{{ dish.category }}</p>
+              </div>
+              <p class="dish-time">{{ dish.time }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories and Status -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Categorias e status</h3>
+            <a href="#" class="link">Gerenciar</a>
+          </div>
+          <div class="card-body">
+            <div class="category-item" v-for="cat in categories" :key="cat.id">
+              <div class="category-info">
+                <p class="category-name">{{ cat.name }}</p>
+                <p class="category-count">{{ cat.count }} prato{{ cat.count > 1 ? 's' : '' }}</p>
+              </div>
+              <span :class="['status-badge', cat.status.toLowerCase()]">{{ cat.status }}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Page Content -->
-      <div class="page-content">
-        <div class="alert-card">
-          <div class="alert-icon">✓</div>
-          <div class="alert-content">
-            <h3>Cardápio publicado</h3>
-            <p>Seu cardápio está ativo e acessível para os clientes</p>
-            <div class="alert-buttons">
-              <button class="btn-secondary">Ver cardápio público</button>
-              <button class="btn-secondary">Baixar QR Code</button>
+      <!-- Right Column -->
+      <div class="right-column">
+        <!-- Publication Checklist -->
+        <div class="card">
+          <h3>Checklist de publicação</h3>
+          <div class="checklist">
+            <div class="checkbox-item">
+              <input type="checkbox" id="check1" v-model="checklist.logo" />
+              <label for="check1">Adicionar logo do restaurante</label>
             </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="check2" v-model="checklist.colors" />
+              <label for="check2">Configurar cores da marca</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="check3" v-model="checklist.dishes" />
+              <label for="check3">Adicionar pelo menos 10 pratos</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="check4" v-model="checklist.banner" />
+              <label for="check4">Criar banner personalizado</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="check5" v-model="checklist.mobile" />
+              <label for="check5">Testar preview mobile</label>
+            </div>
+          </div>
+          <div class="progress-container">
+            <p class="progress-label">Progresso</p>
+            <div class="progress-bar">
+              <div class="progress-fill" :style="{ width: progressPercentage + '%' }"></div>
+            </div>
+            <p class="progress-text">{{ completedItems }}/5 completos</p>
           </div>
         </div>
 
-        <!-- Stats Grid -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon blue">📁</div>
-            <div class="stat-info">
-              <p class="stat-label">Categorias</p>
-              <p class="stat-number">8</p>
-            </div>
+        <!-- Visual Identity -->
+        <div class="card">
+          <h3>Identidade visual</h3>
+          <p class="card-subtitle">Logo do restaurante</p>
+          <div class="upload-area">
+            <p>📤</p>
+            <p class="upload-text">Clique para fazer upload</p>
           </div>
-          <div class="stat-card">
-            <div class="stat-icon red">✕</div>
-            <div class="stat-info">
-              <p class="stat-label">Pratos Totais</p>
-              <p class="stat-number">42</p>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon green">●</div>
-            <div class="stat-info">
-              <p class="stat-label">Pratos Ativos</p>
-              <p class="stat-number">38</p>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon gray">⊗</div>
-            <div class="stat-info">
-              <p class="stat-label">Pratos Inativos</p>
-              <p class="stat-number">4</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Main Content Grid -->
-        <div class="content-grid">
-          <!-- Left Column -->
-          <div class="left-column">
-            <!-- Recent Dishes -->
-            <div class="card">
-              <div class="card-header">
-                <h3>Últimos pratos editados</h3>
-                <a href="#" class="link">Ver todos</a>
+          <div class="colors-section">
+            <p class="colors-title">Cores</p>
+            <div class="colors">
+              <div class="color-item">
+                <div class="color-box primary"></div>
+                <p>Primária</p>
               </div>
-              <div class="card-body">
-                <div class="dish-item" v-for="dish in recentDishes" :key="dish.id">
-                  <div class="dish-info">
-                    <p class="dish-name">{{ dish.name }}</p>
-                    <p class="dish-category">{{ dish.category }}</p>
-                  </div>
-                  <p class="dish-time">{{ dish.time }}</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Categories and Status -->
-            <div class="card">
-              <div class="card-header">
-                <h3>Categorias e status</h3>
-                <a href="#" class="link">Gerenciar</a>
-              </div>
-              <div class="card-body">
-                <div class="category-item" v-for="cat in categories" :key="cat.id">
-                  <div class="category-info">
-                    <p class="category-name">{{ cat.name }}</p>
-                    <p class="category-count">{{ cat.count }} prato{{ cat.count > 1 ? 's' : '' }}</p>
-                  </div>
-                  <span :class="['status-badge', cat.status.toLowerCase()]">{{ cat.status }}</span>
-                </div>
+              <div class="color-item">
+                <div class="color-box secondary"></div>
+                <p>Secundária</p>
               </div>
             </div>
           </div>
-
-          <!-- Right Column -->
-          <div class="right-column">
-            <!-- Publication Checklist -->
-            <div class="card">
-              <h3>Checklist de publicação</h3>
-              <div class="checklist">
-                <div class="checkbox-item">
-                  <input type="checkbox" id="check1" v-model="checklist.logo" />
-                  <label for="check1">Adicionar logo do restaurante</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="check2" v-model="checklist.colors" />
-                  <label for="check2">Configurar cores da marca</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="check3" v-model="checklist.dishes" />
-                  <label for="check3">Adicionar pelo menos 10 pratos</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="check4" v-model="checklist.banner" />
-                  <label for="check4">Criar banner personalizado</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="check5" v-model="checklist.mobile" />
-                  <label for="check5">Testar preview mobile</label>
-                </div>
-              </div>
-              <div class="progress-container">
-                <p class="progress-label">Progresso</p>
-                <div class="progress-bar">
-                  <div class="progress-fill" :style="{ width: progressPercentage + '%' }"></div>
-                </div>
-                <p class="progress-text">{{ completedItems }}/5 completos</p>
-              </div>
-            </div>
-
-            <!-- Visual Identity -->
-            <div class="card">
-              <h3>Identidade visual</h3>
-              <p class="card-subtitle">Logo do restaurante</p>
-              <div class="upload-area">
-                <p>📤</p>
-                <p class="upload-text">Clique para fazer upload</p>
-              </div>
-              <div class="colors-section">
-                <p class="colors-title">Cores</p>
-                <div class="colors">
-                  <div class="color-item">
-                    <div class="color-box primary"></div>
-                    <p>Primária</p>
-                  </div>
-                  <div class="color-item">
-                    <div class="color-box secondary"></div>
-                    <p>Secundária</p>
-                  </div>
-                </div>
-              </div>
-              <a href="#" class="link">Editar identidade visual</a>
-            </div>
-          </div>
+          <a href="#" class="link">Editar identidade visual</a>
         </div>
       </div>
     </div>
@@ -170,13 +148,8 @@
 </template>
 
 <script>
-import Sidebar from '../components/Sidebar.vue'
-
 export default {
   name: 'DashboardPage',
-  components: {
-    Sidebar
-  },
   data() {
     return {
       recentDishes: [
@@ -209,95 +182,12 @@ export default {
     progressPercentage() {
       return (this.completedItems / 5) * 100
     }
-  },
-  methods: {
-    handleLogout() {
-      this.$router.push('/login')
-    }
   }
 }
 </script>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.dashboard-layout {
-  display: flex;
-  height: 100vh;
-  background-color: #f5f5f5;
-}
-
-/* MAIN CONTENT */
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  margin-left: 220px;
-}
-
-.top-header {
-  background: white;
-  padding: 20px 40px;
-  border-bottom: 1px solid #e8e8e8;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.top-header h1 {
-  font-size: 28px;
-  color: #1a1a1a;
-  font-weight: 700;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.header-link {
-  color: #999;
-  text-decoration: none;
-  font-size: 14px;
-  transition: color 0.3s;
-}
-
-.header-link:hover {
-  color: #1a1a1a;
-}
-
-.btn-sair {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: none;
-  color: #999;
-  cursor: pointer;
-  font-size: 14px;
-  transition: color 0.3s;
-}
-
-.btn-sair:hover {
-  color: #ef2020;
-}
-
-.btn-sair .icon {
-  font-size: 16px;
-}
-
-.page-content {
+.page-wrapper {
   padding: 40px;
   overflow-y: auto;
 }
@@ -661,16 +551,12 @@ export default {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-  .main-content {
-    margin-left: 0;
+  .page-wrapper {
+    padding: 20px;
   }
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .header-right {
-    gap: 15px;
   }
 }
 </style>
