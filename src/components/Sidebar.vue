@@ -1,0 +1,184 @@
+<template>
+  <aside class="sidebar">
+    <div class="logo-area">
+      <img src="../assets/Logo.svg" alt="Logo">
+      <h2>Cardáp.io</h2>
+    </div>
+
+    <nav class="menu">
+      <router-link 
+        v-for="item in menuItems" 
+        :key="item.path"
+        :to="item.path" 
+        class="menu-item"
+        :class="{ active: isActive(item.path) }"
+      >
+        <span class="icon">{{ item.icon }}</span>
+        <span>{{ item.label }}</span>
+      </router-link>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-logout" @click="handleLogout">
+        <span class="icon">🚪</span>
+        <span>Sair</span>
+      </button>
+    </div>
+  </aside>
+</template>
+
+<script>
+import { useRoute } from 'vue-router'
+
+export default {
+  name: 'AppSidebar',
+  setup() {
+    const route = useRoute()
+
+    const menuItems = [
+      { path: '/dashboard', label: 'Dashboard', icon: '📊' },
+      { path: '/categorias', label: 'Categorias', icon: '📁' },
+      { path: '/pratos', label: 'Pratos', icon: '🍽️' },
+      { path: '/personalizacao', label: 'Personalizar', icon: '🎨' },
+      { path: '/dados-restaurante', label: 'Dados do Restaurante', icon: '🏠' },
+      { path: '/qrcode', label: 'Qr Code', icon: '📱' },
+      { path: '/preview', label: 'Preview', icon: '👁️' }
+    ]
+
+    const isActive = (path) => {
+      return route.path === path
+    }
+
+    return {
+      menuItems,
+      isActive
+    }
+  },
+  methods: {
+    handleLogout() {
+      this.$router.push('/login')
+    }
+  }
+}
+</script>
+
+<style scoped>
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  background: white;
+  border-right: 1px solid #e8e8e8;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow-y: auto;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.logo-area img {
+  width: 32px;
+}
+
+.logo-area h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.menu {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #666;
+  transition: all 0.3s;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.menu-item:hover {
+  background-color: #f5f5f5;
+  color: #1a1a1a;
+}
+
+.menu-item.active {
+  background-color: #fce4e4;
+  color: #ef2020;
+}
+
+.menu-item .icon {
+  font-size: 18px;
+}
+
+.sidebar-footer {
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.btn-logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: white;
+  border: none;
+  border-radius: 8px;
+  color: #ef2020;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-logout:hover {
+  background-color: #fce4e4;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 1px solid #e8e8e8;
+  }
+
+  .menu {
+    flex-direction: row;
+    flex: 1;
+    overflow-x: auto;
+  }
+
+  .sidebar-footer {
+    padding-top: 0;
+    padding-left: 20px;
+    border-top: none;
+    border-left: 1px solid #f0f0f0;
+  }
+}
+</style>
