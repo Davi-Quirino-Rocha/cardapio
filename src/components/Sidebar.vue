@@ -134,6 +134,11 @@
 .menu-item.active {
   background-color: #fce4e4;
   color: #ef2020;
+  font-weight: 600;
+}
+.menu-item.active .icon {
+  /* Filtro mágico que transforma cinza/preto no vermelho exato do seu projeto (#ef2020) */
+  filter: invert(21%) sepia(91%) saturate(5411%) hue-rotate(352deg) brightness(96%) contrast(105%);
 }
 
 .menu-item .icon {
