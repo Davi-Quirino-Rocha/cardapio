@@ -4,8 +4,9 @@ import Home from '../views/home.vue'
 import LoginPage from '../views/LoginPage.vue'
 import RegisterPage from '../views/RegisterPage.vue'
 import DashboardLayout from '../views/DashboardLayout.vue'
-import Dashboard from '../views/DashBoard.vue'
+import DashBoard from '../views/DashBoard.vue'
 import Categorias from '../views/Categorias.vue'
+import Pratos from '../views/Pratos.vue'
 
 const routes = [
   {
@@ -26,7 +27,7 @@ const routes = [
     children: [
       {
         path: '',
-        component: Dashboard
+        component: DashBoard
       },
       {
         path: '/categorias',
@@ -34,7 +35,7 @@ const routes = [
       },
       {
         path: '/pratos',
-        component: { template: '<div class="page-wrapper"><h2>Pratos</h2><p>Página em construção</p></div>' }
+        component: Pratos
       },
       {
         path: '/personalizacao',

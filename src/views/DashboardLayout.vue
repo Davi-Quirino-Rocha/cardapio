@@ -12,7 +12,7 @@
         <div class="header-right">
           <a href="#" class="header-link">Ver cardápio público</a>
           <button class="btn-sair" @click="handleLogout">
-            <span class="icon">🚪</span>
+            <span class="icon"><img src="../assets/PortaFundos.svg" alt="Porta"></span>
             <span>Sair</span>
           </button>
         </div>
@@ -135,8 +135,9 @@ export default {
 }
 
 .btn-sair .icon {
-  font-size: 16px;
+  font-size: 10px;
 }
+
 
 .page-content {
   flex: 1;

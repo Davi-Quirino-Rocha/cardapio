@@ -1,11 +1,9 @@
 <template>
-
-  <NavBar v-if="!ocultarLayout" />
+  <NavBar v-if="exibirLayout" />
 
   <router-view />
 
-  <AppFooter v-if="!ocultarLayout" />
-
+  <AppFooter v-if="exibirLayout" />
 </template>
 
 <script setup>
@@ -17,11 +15,10 @@ import AppFooter from './components/AppFooter.vue'
 
 const route = useRoute()
 
-const ocultarLayout = computed(() => {
-  return ['/login', '/cadastro', '/dashboard', '/categorias'].includes(route.path)
+// Nova lógica: Retorna TRUE apenas se o caminho for exatamente '/' (Home)
+const exibirLayout = computed(() => {
+  return route.path === '/'
 })
-
-
 </script>
 
 <style>
