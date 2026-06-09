@@ -40,12 +40,12 @@ export default {
     pageTitle() {
       const titles = {
         '/dashboard': 'Dashboard',
-        '/categorias': 'Categorias',
-        '/pratos': 'Pratos',
-        '/personalizacao': 'Personalizar',
-        '/dados-restaurante': 'Dados do Restaurante',
-        '/qrcode': 'QR Code',
-        '/preview': 'Preview'
+        '/dashboard/categorias': 'Categorias',
+        '/dashboard/pratos': 'Pratos',
+        '/dashboard/personalizacao': 'Personalizar',
+        '/dashboard/dados-restaurante': 'Dados do Restaurante',
+        '/dashboard/qrcode': 'QR Code',
+        '/dashboard/preview': 'Preview'
       }
       return titles[this.$route.path] || 'Dashboard'
     }

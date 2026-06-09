@@ -7,6 +7,10 @@ import DashboardLayout from '../views/DashboardLayout.vue'
 import DashBoard from '../views/DashBoard.vue'
 import Categorias from '../views/Categorias.vue'
 import Pratos from '../views/Pratos.vue'
+import Personalizar from '../views/Personalizacao.vue'
+import DadosRestaurante from '../views/DadosRestaurante.vue'
+import QrCode from '../views/QrCode.vue'
+import NovaCategoria from '../views/NovaCategoria.vue'
 
 const routes = [
   {
@@ -30,28 +34,39 @@ const routes = [
         component: DashBoard
       },
       {
-        path: '/categorias',
+        path: 'categorias',
         component: Categorias
       },
       {
-        path: '/pratos',
+        path: 'categorias/nova',
+        component: NovaCategoria
+      },
+      {
+        path: 'pratos',
         component: Pratos
       },
       {
-        path: '/personalizacao',
-        component: { template: '<div class="page-wrapper"><h2>Personalizar</h2><p>Página em construção</p></div>' }
+        path: 'personalizacao',
+        component: Personalizar
       },
       {
-        path: '/dados-restaurante',
-        component: { template: '<div class="page-wrapper"><h2>Dados do Restaurante</h2><p>Página em construção</p></div>' }
+        path: 'dados-restaurante',
+        component: DadosRestaurante
       },
       {
-        path: '/qrcode',
-        component: { template: '<div class="page-wrapper"><h2>QR Code</h2><p>Página em construção</p></div>' }
+        path: 'qrcode',
+        component: QrCode
       },
       {
-        path: '/preview',
-        component: { template: '<div class="page-wrapper"><h2>Preview</h2><p>Página em construção</p></div>' }
+        path: 'preview',
+        component: {
+          template: `
+            <div class="page-wrapper">
+              <h2>Preview</h2>
+              <p>Página em construção</p>
+            </div>
+          `
+        }
       }
     ]
   }

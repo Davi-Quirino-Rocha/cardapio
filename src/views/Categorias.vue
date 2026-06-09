@@ -5,7 +5,7 @@
         <h2>Categorias</h2>
         <p>Organize seus pratos em categorias</p>
       </div>
-      <button class="btn-nova-categoria" @click="openNewCategoryModal">
+      <button class="btn-nova-categoria" @click="$router.push('/dashboard/categorias/nova')">
         + Nova categoria
       </button>
     </div>

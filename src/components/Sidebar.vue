@@ -46,12 +46,12 @@
 
       const menuItems = [
         { path: '/dashboard', label: 'Dashboard', icon: dashboardIcon },
-        { path: '/categorias', label: 'Categorias', icon: categoriasIcon },
-        { path: '/pratos', label: 'Pratos', icon: pratosIcon },
-        { path: '/personalizacao', label: 'Personalizar', icon: personalizacaoIcon },
-        { path: '/dados-restaurante', label: 'Dados do Restaurante', icon: restauranteIcon },
-        { path: '/qrcode', label: 'Qr Code', icon: qrIcon },
-        { path: '/preview', label: 'Preview', icon: previewIcon }
+        { path: '/dashboard/categorias', label: 'Categorias', icon: categoriasIcon },
+        { path: '/dashboard/pratos', label: 'Pratos', icon: pratosIcon },
+        { path: '/dashboard/personalizacao', label: 'Personalizar', icon: personalizacaoIcon },
+        { path: '/dashboard/dados-restaurante', label: 'Dados do Restaurante', icon: restauranteIcon },
+        { path: '/dashboard/qrcode', label: 'Qr Code', icon: qrIcon },
+        { path: '/dashboard/preview', label: 'Preview', icon: previewIcon }
       ]
 
       const isActive = (path) => route.path === path
