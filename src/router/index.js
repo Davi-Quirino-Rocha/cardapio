@@ -11,6 +11,7 @@ import Personalizar from '../views/Personalizacao.vue'
 import DadosRestaurante from '../views/DadosRestaurante.vue'
 import QrCode from '../views/QrCode.vue'
 import NovaCategoria from '../views/NovaCategoria.vue'
+import Preview from '../views/Preview.vue'
 
 const routes = [
   {
@@ -59,14 +60,7 @@ const routes = [
       },
       {
         path: 'preview',
-        component: {
-          template: `
-            <div class="page-wrapper">
-              <h2>Preview</h2>
-              <p>Página em construção</p>
-            </div>
-          `
-        }
+        component: Preview
       }
     ]
   }
