@@ -5,8 +5,8 @@
         <h2>Pratos</h2>
         <p>Gerencie o cardápio do seu restaurante</p>
       </div>
-      <button class="btn-novo-prato" @click="openNewPratoModal">
-        Novo prato
+      <button class="btn-novo-prato" @click="$router.push('/dashboard/pratos/novo')">
+        + Novo prato
       </button>
     </div>
 

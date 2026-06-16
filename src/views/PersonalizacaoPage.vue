@@ -1,27 +1,26 @@
 <template>
   <div class="personalizar-container">
-
     <div class="header">
       <h1>Personalizar cardápio</h1>
       <p>Configure a identidade visual do seu cardápio</p>
     </div>
 
     <div class="content-grid">
-
-      <!-- LADO ESQUERDO -->
       <div class="main-content">
-
-        <!-- LOGO -->
         <div class="card">
           <h2>Logo do restaurante</h2>
 
           <div class="upload-area">
-            <div class="upload-box">
-              <span><img src="../assets/Download.svg" alt="Download"></span>
-            </div>
+            <label class="upload-box">
+              <input type="file" accept="image/png, image/svg+xml" hidden @change="handleLogoUpload" />
+              <span><img src="../assets/Download.svg" alt="Download" /></span>
+            </label>
 
             <div class="upload-info">
-              <button>Escolher logo</button>
+              <label class="btn-escolher">
+                Escolher logo
+                <input type="file" accept="image/png, image/svg+xml" hidden @change="handleLogoUpload" />
+              </label>
 
               <p>PNG ou SVG até 2MB</p>
               <p>Recomendado: 512x512px</p>
@@ -29,129 +28,100 @@
           </div>
         </div>
 
-        <!-- CORES -->
         <div class="card">
           <h2>Cores da marca</h2>
 
           <div class="cores-grid">
-
             <div>
               <label>Cor primária</label>
-
               <div class="color-input">
-                <div
-                  class="preview"
-                  :style="{ background: corPrimaria }"
-                ></div>
-
-                <input
-                  v-model="corPrimaria"
-                  type="text"
-                />
+                <div class="preview" :style="{ background: corPrimaria }"></div>
+                <input v-model="corPrimaria" type="text" />
               </div>
-
               <small>Usadas em botões e destaques</small>
             </div>
 
             <div>
               <label>Cor secundária</label>
-
               <div class="color-input">
-                <div
-                  class="preview"
-                  :style="{ background: corSecundaria }"
-                ></div>
-
-                <input
-                  v-model="corSecundaria"
-                  type="text"
-                />
+                <div class="preview" :style="{ background: corSecundaria }"></div>
+                <input v-model="corSecundaria" type="text" />
               </div>
-
               <small>Usadas em cabeçalhos e textos</small>
             </div>
-
           </div>
         </div>
 
-        <!-- BANNER -->
         <div class="card">
           <h2>Banner do cardápio</h2>
 
-          <div class="banner-upload">
-            <span><img src="../assets/Download.svg" alt="Upload"></span>
-
+          <label class="banner-upload">
+            <input type="file" accept="image/jpeg, image/png" hidden @change="handleBannerUpload" />
+            <span><img src="../assets/Download.svg" alt="Upload" /></span>
             <p>Banner opcional para o topo do cardápio</p>
-          </div>
+          </label>
 
-          <button class="btn-banner">
+          <label class="btn-banner">
             Adicionar banner
-          </button>
+            <input type="file" accept="image/jpeg, image/png" hidden @change="handleBannerUpload" />
+          </label>
 
-          <small>
-            JPG ou PNG até 5MB • Recomendado: 1920x400px
-          </small>
+          <small>JPG ou PNG até 5MB • Recomendado: 1920x400px</small>
         </div>
 
         <div class="footer-action">
-          <button class="btn-salvar">
-            Salvar alterações
-          </button>
+          <button class="btn-salvar">Salvar alterações</button>
         </div>
-
       </div>
 
-      <!-- SIDEBAR DIREITA -->
       <div class="sidebar">
-
         <div class="card">
           <h2>Orientações</h2>
 
           <ul class="orientacoes">
-            <li><img src="../assets/Corretoverde.svg" alt="Verde"> Use cores que representem sua marca</li>
-            <li><img src="../assets/Corretoverde.svg" alt="Verde"> Logo em alta resolução garante boa visualização</li>
-            <li><img src="../assets/Corretoverde.svg" alt="Verde"> Banner é opcional mas cria uma ótima primeira impressão</li>
-            <li><img src="../assets/Corretoverde.svg" alt="Verde"> Teste no preview antes de publicar</li>
+            <li><img src="../assets/Corretoverde.svg" alt="Verde" /> Use cores que representem sua marca</li>
+            <li><img src="../assets/Corretoverde.svg" alt="Verde" /> Logo em alta resolução garante boa visualização</li>
+            <li><img src="../assets/Corretoverde.svg" alt="Verde" /> Banner é opcional mas cria uma ótima primeira impressão</li>
+            <li><img src="../assets/Corretoverde.svg" alt="Verde" /> Teste no preview antes de publicar</li>
           </ul>
         </div>
 
         <div class="card">
-          <h2>Pre-visualização de cores</h2>
+          <h2>Pré-visualização de cores</h2>
 
-          <div
-            class="preview-card"
-            :style="{ background: corPrimaria }"
-          >
+          <div class="preview-card" :style="{ background: corPrimaria }">
             <strong>Cor primária</strong>
             <span>Botões e destaques</span>
           </div>
 
-          <div
-            class="preview-card"
-            :style="{ background: corSecundaria }"
-          >
+          <div class="preview-card" :style="{ background: corSecundaria }">
             <strong>Cor secundária</strong>
             <span>Cabeçalhos e textos</span>
           </div>
         </div>
-
       </div>
-
     </div>
   </div>
 </template>
-  <script>
-  export default {
-      name: 'PersonalizacaoPage'
-    }
-  </script>
 
 <script setup>
 import { ref } from 'vue'
 
 const corPrimaria = ref('#1400C7')
 const corSecundaria = ref('#39A300')
+
+const logoFile = ref(null)
+const bannerFile = ref(null)
+
+function handleLogoUpload(event) {
+  logoFile.value = event.target.files[0]
+}
+
+function handleBannerUpload(event) {
+  bannerFile.value = event.target.files[0]
+}
 </script>
+
 
 <style scoped>
 .personalizar-container {
@@ -289,5 +259,20 @@ const corSecundaria = ref('#39A300')
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
+}
+
+.upload-box,
+.banner-upload,
+.btn-escolher,
+.btn-banner {
+  cursor: pointer;
+}
+
+.btn-escolher {
+  display: inline-block;
+  border: 1px solid #ccc;
+  background: white;
+  padding: 10px 20px;
+  border-radius: 10px;
 }
 </style>

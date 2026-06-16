@@ -7,12 +7,13 @@ import DashboardLayout from '../views/DashboardLayout.vue'
 import DashBoard from '../views/DashBoard.vue'
 import Categorias from '../views/Categorias.vue'
 import Pratos from '../views/Pratos.vue'
-import Personalizar from '../views/Personalizacao.vue'
+import Personalizar from '../views/PersonalizacaoPage.vue'
 import DadosRestaurante from '../views/DadosRestaurante.vue'
 import QrCode from '../views/QrCode.vue'
 import NovaCategoria from '../views/NovaCategoria.vue'
 import Preview from '../views/Preview.vue'
 import EditarCategoria from '../views/EditarCategoria.vue'
+import NovoPrato from '../views/NovoPrato.vue'
 
 const routes = [
   {
@@ -50,6 +51,10 @@ const routes = [
       {
         path: 'pratos',
         component: Pratos
+      },
+      {
+        path: 'pratos/novo',
+        component: NovoPrato
       },
       {
         path: 'personalizacao',
