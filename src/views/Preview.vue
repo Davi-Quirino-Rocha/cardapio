@@ -21,12 +21,31 @@
         <p class="subtitle">
           Cozinha italiana tradicional com toques contemporâneos
         </p>
-
         <div class="info">
-          <span>Rua dos Pinheiros, 123</span>
+          <span>Rua dos pinheiros, 123 -  Pinheiros São Paulo - SP </span>
           <span>(11) 3456-4673</span>
-          <span>12h-23h</span>
+          <span>Ter-Dom: 12h-15h e 19h-23h</span>
         </div>
+        <hr>
+        <div class="info">
+        <!-- Grupo Instagram -->
+          <div class="item">
+            <img src="../assets/instagram.svg" alt="Insta">
+            <span>@dongiovanni</span>
+          </div>
+
+          <!-- Grupo Facebook -->
+          <div class="item">
+            <img src="../assets/facebook.svg" alt="Face">
+            <span>dongiovanni</span>
+          </div>
+
+          <!-- Grupo Website -->
+          <div class="item">
+            <span>www.dongiovanni.com.br</span>
+          </div>
+        </div>
+
       </div>
       
 
@@ -179,9 +198,25 @@ export default {
 .info {
   display: flex;
   justify-content: center;
-  gap: 25px;
+  gap: 100px;
   margin-top: 20px;
+  padding: 10px 30px;
+  font-family: sans-serif;
 }
+
+
+.info .item {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+}
+
+
+.info .item img {
+  width: 18px;
+  height: 18px;
+}
+
 
 .categories {
   margin-top: 25px;
@@ -190,15 +225,19 @@ export default {
   padding: 10px;
   display: flex;
   gap: 10px;
+  display: flex;
+  justify-content: space-between;
+  
 }
 
 .categories button {
   border: none;
   background: transparent;
-  padding: 15px 30px;
+  padding: 15px 100px;
   border-radius: 15px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 30px;
 }
 
 .categories button.active {
@@ -239,4 +278,13 @@ export default {
   font-size: 28px;
   font-weight: bold;
 }
+
+hr {
+  display: flex;
+  width: 800px;
+  margin: auto;
+  margin-top: 10px;
+}
+
+
 </style>

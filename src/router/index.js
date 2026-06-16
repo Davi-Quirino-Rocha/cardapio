@@ -12,6 +12,7 @@ import DadosRestaurante from '../views/DadosRestaurante.vue'
 import QrCode from '../views/QrCode.vue'
 import NovaCategoria from '../views/NovaCategoria.vue'
 import Preview from '../views/Preview.vue'
+import EditarCategoria from '../views/EditarCategoria.vue'
 
 const routes = [
   {
@@ -41,6 +42,10 @@ const routes = [
       {
         path: 'categorias/nova',
         component: NovaCategoria
+      },
+      {
+        path: 'categorias/editar',
+        component: EditarCategoria
       },
       {
         path: 'pratos',

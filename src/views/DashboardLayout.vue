@@ -121,23 +121,37 @@ export default {
 .btn-sair {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: none;
+  gap: 12px;
+  background: transparent;
   border: none;
-  color: #999;
+  color: #777;
   cursor: pointer;
-  font-size: 14px;
-  transition: color 0.3s;
+  transition: all 0.3s;
+}
+
+.btn-sair .icon img {
+  width: 20px;
+  height: 20px;
 }
 
 .btn-sair:hover {
   color: #ef2020;
 }
 
-.btn-sair .icon {
-  font-size: 10px;
+.btn-sair:hover .icon img {
+  filter: invert(21%) sepia(91%) saturate(5411%)
+          hue-rotate(352deg) brightness(96%)
+          contrast(105%);
 }
 
+.header-link {
+  color: #777;
+  transition: color .3s;
+}
+
+.header-link:hover {
+  color: #ef2020;
+}
 
 .page-content {
   flex: 1;

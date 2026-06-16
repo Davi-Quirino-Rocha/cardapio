@@ -165,13 +165,21 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  transition: all 0.3s;
+
+}
+
+.btn-logout {
+  color: #666;
 }
 
 .btn-logout:hover {
   background-color: #fce4e4;
+  color: #ef2020;
 }
 
+.btn-logout:hover .icon {
+  filter: invert(21%) sepia(91%) saturate(5411%) hue-rotate(352deg) brightness(96%) contrast(105%);
+}
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .sidebar {

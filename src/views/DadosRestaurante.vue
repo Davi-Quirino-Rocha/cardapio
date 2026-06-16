@@ -127,12 +127,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'DadosRestaurantePage'
-}
-</script>
-
 <style scoped>
 .dados-container {
   padding: 30px;

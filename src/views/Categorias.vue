@@ -23,7 +23,7 @@
             <span v-if="category.status" class="status-badge">{{ category.status }}</span>
           </div>
           <p class="category-count">
-            <span class="icon">🍽️</span>
+            <span class="icon"><img src="../assets/Garfo.svg" alt="Garfo"></span>
             {{ category.count }} Prato{{ category.count > 1 ? 's' : '' }}
           </p>
         </div>
@@ -40,12 +40,12 @@
             </label>
           </div>
 
-          <button class="btn-icon" @click="editCategory(category.id)" title="Editar">
-            <span>✏️</span>
+          <button class="btn-icon" @click="$router.push('/dashboard/categorias/editar')">
+            <span><img src="../assets/lapis.svg" alt="lapis"></span>
           </button>
 
           <button class="btn-icon btn-delete" @click="deleteCategory(category.id)" title="Deletar">
-            <span>🗑️</span>
+            <span><img src="../assets/lixo.svg" alt="lixo"></span>
           </button>
         </div>
       </div>

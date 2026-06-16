@@ -38,10 +38,7 @@
           <label>URL pública</label>
 
           <div class="url-box">
-            <input
-              readonly
-              value="https://cardapio.dongiovanni.com.br"
-            >
+            <input>
 
             <button class="copy-btn">
               📋
@@ -80,12 +77,6 @@
 
   </div>
 </template>
-
-<script>
-export default {
-  name: 'QrCodePage'
-}
-</script>
 
 <style scoped>
 .qr-container {
