@@ -14,6 +14,7 @@ import NovaCategoria from '../views/NovaCategoria.vue'
 import Preview from '../views/Preview.vue'
 import EditarCategoria from '../views/EditarCategoria.vue'
 import NovoPrato from '../views/NovoPrato.vue'
+import EditarPrato from '../views/EditarPrato.vue'
 
 const routes = [
   {
@@ -55,6 +56,10 @@ const routes = [
       {
         path: 'pratos/novo',
         component: NovoPrato
+      },
+      {
+        path: 'pratos/editar/:id',
+        component: EditarPrato
       },
       {
         path: 'personalizacao',

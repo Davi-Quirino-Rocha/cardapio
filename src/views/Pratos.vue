@@ -41,7 +41,7 @@
             <p class="prato-category">{{ prato.category }}</p>
             <p class="prato-price">R$ {{ prato.price }}</p>
             
-            <button class="btn-editar" @click="editPrato(prato.id)">
+            <button class="btn-editar" @click="$router.push('/dashboard/pratos/editar/' + prato.id)">
               Editar
             </button>
           </div>
