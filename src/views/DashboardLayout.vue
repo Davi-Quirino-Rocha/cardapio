@@ -10,7 +10,10 @@
           <h1>{{ pageTitle }}</h1>
         </div>
         <div class="header-right">
-          <a href="#" class="header-link">Ver cardápio público</a>
+          <button
+            class="header-link" @click="$router.push('/cardapio-cliente')">
+            Ver cardápio público
+          </button>
           <button class="btn-sair" @click="handleLogout">
             <span class="icon"><img src="../assets/PortaFundos.svg" alt="Porta"></span>
             <span>Sair</span>
@@ -108,14 +111,21 @@ export default {
 }
 
 .header-link {
-  color: #999;
+  background: transparent;
+  border: none;
+  padding: 0;
+  all: unset;
+  color: #e53935;
   text-decoration: none;
-  font-size: 14px;
-  transition: color 0.3s;
+
+  font-size: 16px;
+  font-weight: 500;
+
+  cursor: pointer;
 }
 
 .header-link:hover {
-  color: #1a1a1a;
+  text-decoration: underline;
 }
 
 .btn-sair {

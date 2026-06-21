@@ -32,7 +32,9 @@
             <span>Lembrar de mim</span>
           </div>
 
-          <a href="#">Esqueceu a senha?</a>
+          <router-link to="/recuperar-senha">
+            Esqueceu a senha?
+          </router-link>
         </div>
 
         <button type="submit">
@@ -215,6 +217,16 @@ font-size:14px;
 color:red;
 text-decoration:none;
 font-weight:bold;
+}
+
+.forgot-password {
+  color: #64748b;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgot-password:hover {
+  color: #ef2020;
 }
 
 </style>

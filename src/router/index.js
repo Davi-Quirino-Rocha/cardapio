@@ -15,6 +15,7 @@ import Preview from '../views/Preview.vue'
 import EditarCategoria from '../views/EditarCategoria.vue'
 import NovoPrato from '../views/NovoPrato.vue'
 import EditarPrato from '../views/EditarPrato.vue'
+import RecuperarSenha from '../views/RecuperarSenha.vue'
 
 const routes = [
   {
@@ -28,6 +29,15 @@ const routes = [
   {
     path: '/cadastro',
     component: RegisterPage
+  },
+  {
+    path: '/recuperar-senha',
+    component: RecuperarSenha
+  },
+  {
+    path: "/cardapio-cliente",
+    name: "CardapioCliente",
+    component: () => import("../views/CardapioCliente.vue")
   },
   {
     path: '/dashboard',
