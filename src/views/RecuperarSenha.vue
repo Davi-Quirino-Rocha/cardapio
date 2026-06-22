@@ -22,7 +22,7 @@
           placeholder="seu@email.com"
         />
 
-        <button @click="enviarRecuperacao">
+        <button @click="$router.push('/email-enviado')">
           Enviar link de recuperação
         </button>
 

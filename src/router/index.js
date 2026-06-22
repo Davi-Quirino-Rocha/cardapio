@@ -16,6 +16,9 @@ import EditarCategoria from '../views/EditarCategoria.vue'
 import NovoPrato from '../views/NovoPrato.vue'
 import EditarPrato from '../views/EditarPrato.vue'
 import RecuperarSenha from '../views/RecuperarSenha.vue'
+import RedefinirSenha from '../views/RedefinirSenha.vue'
+import EmailEnviado from '../views/EmailEnviado.vue'
+import Erro404 from '../views/Erro404.vue'
 
 const routes = [
   {
@@ -33,6 +36,18 @@ const routes = [
   {
     path: '/recuperar-senha',
     component: RecuperarSenha
+  },
+  {
+    path: '/email-enviado',
+    component: EmailEnviado
+  },
+  {
+    path: '/redefinir-senha',
+    component: RedefinirSenha
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    component: Erro404
   },
   {
     path: "/cardapio-cliente",
