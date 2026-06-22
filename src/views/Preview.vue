@@ -89,13 +89,16 @@
         </div>
 
       </div>
-
+        <button class="btn-salvar-preview" @click="salvarPreview">
+          Salvar no cardápio público
+        </button>
     </div>
 
   </div>
 </template>
 
 <script>
+import { carregarPratos } from '@/services/pratosStorage'
 export default {
   name: 'PreviewPage',
 
@@ -157,8 +160,42 @@ export default {
           prato.categoria === this.categoriaSelecionada
       )
     }
+  },
+  methods: {
+    salvarPreview() {
+      const dadosCardapio = {
+        restaurante: {
+          nome: 'Restaurante Don Giovanni',
+          descricao: 'Cozinha italiana tradicional com toques contemporâneos',
+          endereco: 'Rua dos pinheiros, 123 - Pinheiros São Paulo - SP',
+          telefone: '(11) 3456-4673',
+          horario: 'Ter-Dom: 12h-15h e 19h-23h'
+        },
+        categorias: this.categorias,
+        pratos: this.pratos
+      }
+
+      localStorage.setItem('cardapioPublico', JSON.stringify(dadosCardapio))
+
+      alert('Cardápio salvo para o cliente!')
+    }
+  },
+  mounted() {
+  const pratosSalvos = carregarPratos()
+
+  if (pratosSalvos) {
+    this.pratos = pratosSalvos.map(prato => ({
+      id: prato.id,
+      categoria: prato.category || prato.categoria,
+      nome: prato.name || prato.nome,
+      preco: prato.price || prato.preco,
+      imagem: prato.image || prato.imagem,
+      descricao: prato.descricao || ''
+    }))
   }
 }
+}
+
 </script>
 
 <style scoped>
@@ -284,6 +321,17 @@ hr {
   width: 800px;
   margin: auto;
   margin-top: 10px;
+}
+
+.btn-salvar-preview {
+  margin-top: 30px;
+  background: #ef2020;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 24px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 

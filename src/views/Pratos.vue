@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { salvarPratos, carregarPratos } from '@/services/pratosStorage'
 export default {
   name: 'PratosPage',
   data() {
@@ -120,7 +121,16 @@ export default {
     editPrato(id) {
       alert(`Editando prato ${id}`)
     }
+  },
+  mounted() {
+  const pratosSalvos = carregarPratos()
+
+  if (pratosSalvos) {
+    this.pratos = pratosSalvos
+  } else {
+    salvarPratos(this.pratos)
   }
+}
 }
 </script>
 

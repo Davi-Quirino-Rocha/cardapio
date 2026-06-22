@@ -35,14 +35,15 @@
     <section class="lista-pratos">
       <div 
         v-for="prato in pratosFiltrados" 
-        :key="prato.nome"
+        :key="prato.id"
         class="card-prato"
         @click="abrirPrato(prato)"
       >
-        <img :src="prato.imagem" />
+        <img :src="prato.imagem" :alt="prato.nome" />
+
         <div class="conteudo-card">
           <h2>{{ prato.nome }}</h2>
-          <p>{{ prato.preco }}</p>
+          <p>{{ formatarPreco(prato.preco) }}</p>
         </div>
       </div>
     </section>
@@ -50,14 +51,14 @@
     <div v-if="pratoSelecionado" class="overlay" @click="fecharPrato">
       <div class="modal-prato" @click.stop>
         <div class="modal-esquerda">
-          <img :src="pratoSelecionado.imagem" />
+          <img :src="pratoSelecionado.imagem" :alt="pratoSelecionado.nome" />
           <h2>{{ pratoSelecionado.nome }}</h2>
-          <p>{{ pratoSelecionado.preco }}</p>
+          <p>{{ formatarPreco(pratoSelecionado.preco) }}</p>
         </div>
 
         <div class="modal-direita">
           <h2>Descrição do prato:</h2>
-          <p>{{ pratoSelecionado.descricao }}</p>
+          <p>{{ pratoSelecionado.descricao || 'Descrição não cadastrada.' }}</p>
         </div>
       </div>
     </div>
@@ -65,10 +66,6 @@
 </template>
 
 <script>
-import bruschetta from "../assets/Bruschetta.svg";
-import carpaccio from "../assets/Carpaccio.svg";
-import panzanella from "../assets/Picanha.svg";
-
 export default {
   name: "CardapioCliente",
 
@@ -76,43 +73,40 @@ export default {
     return {
       categoriaSelecionada: "Entradas",
       pratoSelecionado: null,
-
       categorias: ["Entradas", "Massas", "Carnes", "Sobremesas"],
-
-      pratos: [
-        {
-          nome: "Bruschetta tradicional",
-          preco: "R$ 99,99",
-          categoria: "Entradas",
-          imagem: bruschetta,
-          descricao:
-            "Fatias de pão artesanal levemente tostadas, regadas com azeite de oliva extravirgem e cobertas com uma seleção de tomates frescos, alho e manjericão. Finalizada com um toque de sal e pimenta."
-        },
-        {
-          nome: "Carpaccio de salmão",
-          preco: "R$ 99,99",
-          categoria: "Entradas",
-          imagem: carpaccio,
-          descricao:
-            "Finas lâminas de salmão fresco servidas com temperos especiais, ervas frescas e um toque cítrico."
-        },
-        {
-          nome: "Picanha",
-          preco: "R$ 99,99",
-          categoria: "Entradas",
-          imagem: panzanella,
-          descricao:
-            "Corte nobre de picanha preparado na brasa, com crosta levemente tostada e interior macio e suculento, realçando o sabor característico da carne. Acompanhada de arroz com brócolis soltinho e batatas fritas douradas e crocantes, compondo uma combinação clássica, equilibrada e sofisticada."
-        }
-      ]
+      pratos: []
     };
+  },
+
+  mounted() {
+    const dadosSalvos = localStorage.getItem("cardapioPublico");
+
+    if (dadosSalvos) {
+      const cardapio = JSON.parse(dadosSalvos);
+
+      this.categorias = cardapio.categorias || [];
+
+      this.pratos = (cardapio.pratos || []).map((prato) => ({
+        ...prato,
+        id: prato.id,
+        imagem: prato.imagem || prato.image,
+        nome: prato.nome || prato.name,
+        preco: prato.preco || prato.price,
+        categoria: prato.categoria || prato.category,
+        descricao: prato.descricao || "Descrição não cadastrada."
+      }));
+
+      if (this.categorias.length > 0) {
+        this.categoriaSelecionada = this.categorias[0];
+      }
+    }
   },
 
   computed: {
     pratosFiltrados() {
-      return this.pratos.filter(
-        prato => prato.categoria === this.categoriaSelecionada
-      );
+      return this.pratos.filter((prato) => {
+        return prato.categoria === this.categoriaSelecionada;
+      });
     }
   },
 
@@ -123,6 +117,11 @@ export default {
 
     fecharPrato() {
       this.pratoSelecionado = null;
+    },
+
+    formatarPreco(preco) {
+      if (!preco) return 'R$ 0,00'
+      return preco.includes('R$') ? preco : `R$ ${preco}`
     }
   }
 };

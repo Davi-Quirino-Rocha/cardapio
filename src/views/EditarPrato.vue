@@ -105,6 +105,8 @@
 </template>
 
 <script>
+import { carregarPratos, salvarPratos } from '@/services/pratosStorage'
+
 export default {
   name: 'EditarPratoPage',
 
@@ -123,63 +125,29 @@ export default {
         observacoes: ''
       },
 
-      pratos: [
-        {
-          id: 1,
-          name: 'Carpaccio de salmão',
-          category: 'Entradas',
-          price: '99,99',
-          image: require('@/assets/Carpaccio.svg')
-        },
-        {
-          id: 2,
-          name: 'Panna cotta',
-          category: 'Sobremesas',
-          price: '99,99',
-          image: require('@/assets/Panna cotta.svg')
-        },
-        {
-          id: 3,
-          name: 'Espaguete à carbonara',
-          category: 'Massas',
-          price: '99,99',
-          image: require('@/assets/espaguete.svg')
-        },
-        {
-          id: 4,
-          name: 'Picanha na brasa',
-          category: 'Carnes',
-          price: '99,99',
-          image: require('@/assets/Picanha.svg')
-        },
-        {
-          id: 5,
-          name: 'Bruschetta tradicional',
-          category: 'Entradas',
-          price: '99,99',
-          image: require('@/assets/Bruschetta.svg')
-        },
-        {
-          id: 6,
-          name: 'Filé mignon',
-          category: 'Carnes',
-          price: '99,99',
-          image: require('@/assets/File mignon.svg')
-        }
-      ]
+      pratos: []
     }
   },
 
   mounted() {
     const id = Number(this.$route.params.id)
 
+    const pratosSalvos = carregarPratos() || []
+
+    this.pratos = pratosSalvos
+
     const pratoEncontrado = this.pratos.find((prato) => prato.id === id)
 
     if (pratoEncontrado) {
-      this.form.nome = pratoEncontrado.name
-      this.form.categoria = pratoEncontrado.category
-      this.form.preco = pratoEncontrado.price
-      this.imagemPreview = pratoEncontrado.image
+      this.form.nome = pratoEncontrado.name || pratoEncontrado.nome
+      this.form.categoria = pratoEncontrado.category || pratoEncontrado.categoria
+      this.form.preco = pratoEncontrado.price || pratoEncontrado.preco
+      this.form.descricao = pratoEncontrado.descricao || ''
+      this.form.ativo = pratoEncontrado.ativo ?? true
+      this.form.destaque = pratoEncontrado.destaque ?? false
+      this.form.ordem = pratoEncontrado.ordem || 1
+      this.form.observacoes = pratoEncontrado.observacoes || ''
+      this.imagemPreview = pratoEncontrado.image || pratoEncontrado.imagem
     }
   },
 
@@ -193,7 +161,34 @@ export default {
     },
 
     salvarPrato() {
-      console.log('Prato salvo:', this.form)
+      const id = Number(this.$route.params.id)
+
+      const pratosAtualizados = this.pratos.map((prato) => {
+        if (prato.id === id) {
+          return {
+            ...prato,
+            name: this.form.nome,
+            nome: this.form.nome,
+            category: this.form.categoria,
+            categoria: this.form.categoria,
+            price: this.form.preco,
+            preco: this.form.preco,
+            descricao: this.form.descricao,
+            image: this.imagemPreview,
+            imagem: this.imagemPreview,
+            ativo: this.form.ativo,
+            destaque: this.form.destaque,
+            ordem: this.form.ordem,
+            observacoes: this.form.observacoes
+          }
+        }
+
+        return prato
+      })
+
+      salvarPratos(pratosAtualizados)
+
+      alert('Prato atualizado!')
       this.$router.push('/dashboard/pratos')
     }
   }
