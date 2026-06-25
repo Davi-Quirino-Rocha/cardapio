@@ -9,6 +9,13 @@
     </button>
 
     <h1 class="page-title">Editar categoria</h1>
+    <p v-if="errors.geral" class="erro-geral">
+      {{ errors.geral }}
+    </p>
+
+    <p v-if="mensagemSucesso" class="sucesso">
+      {{ mensagemSucesso }}
+    </p>
 
     <div class="form-card">
       <h2 class="card-title">Informações da categoria</h2>
@@ -19,8 +26,13 @@
           type="text" 
           v-model="form.name"
           class="form-input"
+          :class="{ 'input-error': errors.name }"
           placeholder="Ex: Entradas, Bebidas, Sobremesas"
         />
+
+        <p v-if="errors.name" class="erro">
+          {{ errors.name }}
+        </p>
       </div>
 
       <div class="input-group">
@@ -29,8 +41,13 @@
           v-model="form.description"
           rows="4"
           class="form-textarea"
+          :class="{ 'input-error': errors.description }"
           placeholder="Adicione uma descrição para esta categoria"
         ></textarea>
+
+        <p v-if="errors.description" class="erro">
+          {{ errors.description }}
+        </p>
       </div>
 
       <hr class="card-divider">
@@ -60,32 +77,107 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue'
+import { ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
-const emit = defineEmits(['salvar', 'cancelar', 'voltar'])
+const router = useRouter()
+const route = useRoute()
 
-const form = ref({
+const categoriasExistentes = [
+  { id: 1, name: 'Entradas' },
+  { id: 2, name: 'Massas' },
+  { id: 3, name: 'Carnes' },
+  { id: 4, name: 'Peixes' },
+  { id: 5, name: 'Sobremesas' },
+  { id: 6, name: 'Bebidas' }
+]
+
+const categoriaOriginal = {
+  id: Number(route.params.id) || 1,
   name: 'Entradas',
   description: '',
   isActive: true
+}
+
+const form = ref({ ...categoriaOriginal })
+
+const errors = ref({
+  name: '',
+  description: '',
+  geral: ''
 })
 
-const salvar = () => {
-  if (!form.value.name.trim()) {
-    alert('O nome da categoria é obrigatório!')
+const mensagemSucesso = ref('')
+
+function limparErros() {
+  errors.value = {
+    name: '',
+    description: '',
+    geral: ''
+  }
+
+  mensagemSucesso.value = ''
+}
+
+function validarCategoria() {
+  limparErros()
+
+  let valido = true
+  const nome = form.value.name.trim()
+  const descricao = form.value.description.trim()
+
+  if (!nome) {
+    errors.value.name = 'O nome da categoria é obrigatório.'
+    valido = false
+  } else if (nome.length < 3) {
+    errors.value.name = 'O nome da categoria deve ter no mínimo 3 caracteres.'
+    valido = false
+  } else if (nome.length > 50) {
+    errors.value.name = 'O nome da categoria deve ter no máximo 50 caracteres.'
+    valido = false
+  } else {
+    const nomeJaExiste = categoriasExistentes.some(categoria =>
+      categoria.name.toLowerCase() === nome.toLowerCase() &&
+      categoria.id !== categoriaOriginal.id
+    )
+
+    if (nomeJaExiste) {
+      errors.value.name = 'Esse nome já pertence a outra categoria.'
+      valido = false
+    }
+  }
+
+  if (descricao.length > 200) {
+    errors.value.description = 'A descrição deve ter no máximo 200 caracteres.'
+    valido = false
+  }
+
+  return valido
+}
+
+function salvar() {
+  const categoriaEncontrada = categoriasExistentes.find(
+    categoria => categoria.id === categoriaOriginal.id
+  )
+
+  if (!categoriaEncontrada) {
+    errors.value.geral = 'Categoria não encontrada.'
     return
   }
-  emit('salvar', { ...form.value })
-  alert('Categoria salva com sucesso!')
+
+  if (!validarCategoria()) return
+
+  mensagemSucesso.value = 'Categoria atualizada com sucesso.'
+
+  setTimeout(() => {
+    router.push('/dashboard/categorias')
+  }, 1000)
 }
 
-const cancelar = () => {
-  form.value.name = 'Entradas'
-  form.value.description = ''
-  form.value.isActive = true
-  emit('cancelar')
+function cancelar() {
+  form.value = { ...categoriaOriginal }
+  router.push('/dashboard/categorias')
 }
-
 </script>
 
 <style scoped>
@@ -284,5 +376,33 @@ const cancelar = () => {
 .btn-save:hover {
   background-color: #b91c1c;
   box-shadow: 0 10px 15px -3px rgba(220, 38, 38, 0.2);
+}
+
+.input-error {
+  border-color: #d62d2d !important;
+}
+
+.erro {
+  color: #d62d2d;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.erro-geral {
+  background: #ffe8e8;
+  border: 1px solid #f5b5b5;
+  color: #d62d2d;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+
+.sucesso {
+  background: #e8f9ee;
+  border: 1px solid #b7ebc6;
+  color: #28a745;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
 }
 </style>

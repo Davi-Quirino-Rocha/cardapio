@@ -5,10 +5,13 @@
       <div class="alert-content">
         <h3>Cardápio publicado</h3>
         <p>Seu cardápio está ativo e acessível para os clientes</p>
-        <div class="alert-buttons">
-          <button class="btn-secondary">Ver cardápio público</button>
-          <button class="btn-secondary">Baixar QR Code</button>
-        </div>
+        <button class="btn-secondary" @click="$router.push('/cardapio-cliente')">
+          Ver cardápio público
+        </button>
+
+        <button class="btn-secondary" @click="$router.push('/dashboard/qrcode')">
+          Baixar QR Code
+        </button>
       </div>
     </div>
 
@@ -52,7 +55,9 @@
         <div class="card">
           <div class="card-header">
             <h3>Últimos pratos editados</h3>
-            <a href="#" class="link">Ver todos</a>
+            <router-link to="/dashboard/pratos" class="link">
+              Ver todos
+            </router-link>
           </div>
           <div class="card-body">
             <div class="dish-item" v-for="dish in recentDishes" :key="dish.id">
@@ -69,7 +74,9 @@
         <div class="card">
           <div class="card-header">
             <h3>Categorias e status</h3>
-            <a href="#" class="link">Gerenciar</a>
+            <router-link to="/dashboard/categorias" class="link">
+              Gerenciar
+            </router-link>
           </div>
           <div class="card-body">
             <div class="category-item" v-for="cat in categories" :key="cat.id">
@@ -150,6 +157,7 @@
 <script>
 export default {
   name: 'DashboardPage',
+
   data() {
     return {
       recentDishes: [
@@ -158,6 +166,7 @@ export default {
         { id: 3, name: 'Filé Mignon', category: 'Carnes', time: '1 dia atrás' },
         { id: 4, name: 'Carpaccio de Salmão', category: 'Entradas', time: '2 horas atrás' }
       ],
+
       categories: [
         { id: 1, name: 'Entradas', count: 6, status: 'Ativo' },
         { id: 2, name: 'Massas', count: 8, status: 'Ativo' },
@@ -166,6 +175,7 @@ export default {
         { id: 5, name: 'Sobremesas', count: 5, status: 'Ativo' },
         { id: 6, name: 'Bebidas', count: 7, status: 'Inativo' }
       ],
+
       checklist: {
         logo: true,
         colors: true,
@@ -175,10 +185,12 @@ export default {
       }
     }
   },
+
   computed: {
     completedItems() {
       return Object.values(this.checklist).filter(v => v).length
     },
+
     progressPercentage() {
       return (this.completedItems / 5) * 100
     }

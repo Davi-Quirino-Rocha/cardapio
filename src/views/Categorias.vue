@@ -5,14 +5,38 @@
         <h2>Categorias</h2>
         <p>Organize seus pratos em categorias</p>
       </div>
+
       <button class="btn-nova-categoria" @click="$router.push('/dashboard/categorias/nova')">
         + Nova categoria
       </button>
     </div>
 
-    <!-- Categories List -->
-    <div class="categories-list">
-      <div class="category-item" v-for="category in categories" :key="category.id">
+    <div class="search-area">
+      <input
+        v-model="searchTerm"
+        type="text"
+        placeholder="Pesquisar categoria..."
+      />
+    </div>
+
+    <p v-if="erroCarregamento" class="erro">
+      {{ erroCarregamento }}
+    </p>
+
+    <p v-else-if="categories.length === 0" class="empty-message">
+      Nenhuma categoria cadastrada.
+    </p>
+
+    <p v-else-if="filteredCategories.length === 0" class="empty-message">
+      Nenhuma categoria encontrada.
+    </p>
+
+    <div v-else class="categories-list">
+      <div
+        class="category-item"
+        v-for="category in filteredCategories"
+        :key="category.id"
+      >
         <div class="category-drag">
           <span class="drag-icon">⋮⋮</span>
         </div>
@@ -20,10 +44,19 @@
         <div class="category-info">
           <div class="category-name-section">
             <h3>{{ category.name }}</h3>
-            <span v-if="category.status" class="status-badge">{{ category.status }}</span>
+
+            <span
+              class="status-badge"
+              :class="category.active ? 'ativo' : 'inativo'"
+            >
+              {{ category.active ? 'Ativo' : 'Inativo' }}
+            </span>
           </div>
+
           <p class="category-count">
-            <span class="icon"><img src="../assets/Garfo.svg" alt="Garfo"></span>
+            <span class="icon">
+              <img src="../assets/Garfo.svg" alt="Garfo">
+            </span>
             {{ category.count }} Prato{{ category.count > 1 ? 's' : '' }}
           </p>
         </div>
@@ -31,8 +64,8 @@
         <div class="category-actions">
           <div class="toggle-container">
             <label class="switch">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 v-model="category.active"
                 @change="toggleCategory(category.id)"
               />
@@ -40,11 +73,18 @@
             </label>
           </div>
 
-          <button class="btn-icon" @click="$router.push('/dashboard/categorias/editar')">
+          <button
+            class="btn-icon"
+            @click="$router.push(`/dashboard/categorias/editar/${category.id}`)"
+          >
             <span><img src="../assets/lapis.svg" alt="lapis"></span>
           </button>
 
-          <button class="btn-icon btn-delete" @click="deleteCategory(category.id)" title="Deletar">
+          <button
+            class="btn-icon btn-delete"
+            @click="deleteCategory(category.id)"
+            title="Deletar"
+          >
             <span><img src="../assets/lixo.svg" alt="lixo"></span>
           </button>
         </div>
@@ -56,34 +96,51 @@
 <script>
 export default {
   name: 'CategoriasPage',
+
   data() {
     return {
+      searchTerm: '',
+      erroCarregamento: '',
+
       categories: [
-        { id: 1, name: 'Entradas', count: 6, active: true, status: null },
-        { id: 2, name: 'Massas', count: 6, active: true, status: null },
-        { id: 3, name: 'Carnes', count: 6, active: false, status: 'Inativo' },
-        { id: 4, name: 'Peixes', count: 6, active: true, status: null },
-        { id: 5, name: 'Sobremesas', count: 6, active: true, status: null },
-        { id: 6, name: 'Bebidas', count: 6, active: false, status: 'Inativo' }
+        { id: 1, name: 'Entradas', count: 6, active: true },
+        { id: 2, name: 'Massas', count: 6, active: true },
+        { id: 3, name: 'Carnes', count: 6, active: false },
+        { id: 4, name: 'Peixes', count: 6, active: true },
+        { id: 5, name: 'Sobremesas', count: 6, active: true },
+        { id: 6, name: 'Bebidas', count: 6, active: false }
       ]
     }
   },
-  methods: {
-    openNewCategoryModal() {
-      alert('Modal para criar nova categoria')
-    },
-    editCategory(id) {
-      alert(`Editando categoria ${id}`)
-    },
-    deleteCategory(id) {
-      if (confirm('Tem certeza que deseja deletar esta categoria?')) {
-        this.categories = this.categories.filter(cat => cat.id !== id)
+
+  computed: {
+    filteredCategories() {
+      const termo = this.searchTerm.toLowerCase().trim()
+
+      if (!termo) {
+        return this.categories
       }
+
+      return this.categories.filter(category =>
+        category.name.toLowerCase().includes(termo)
+      )
+    }
+  },
+
+  methods: {
+    deleteCategory(id) {
+      const confirmar = confirm('Tem certeza que deseja deletar esta categoria?')
+
+      if (!confirmar) return
+
+      this.categories = this.categories.filter(category => category.id !== id)
     },
+
     toggleCategory(id) {
-      const category = this.categories.find(cat => cat.id === id)
-      if (category) {
-        category.status = category.active ? null : 'Inativo'
+      const category = this.categories.find(category => category.id === id)
+
+      if (!category) {
+        this.erroCarregamento = 'Categoria não encontrada.'
       }
     }
   }
@@ -96,12 +153,11 @@ export default {
   overflow-y: auto;
 }
 
-/* CATEGORIES HEADER */
 .categories-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .categories-title h2 {
@@ -132,7 +188,42 @@ export default {
   background-color: #d91a1a;
 }
 
-/* CATEGORIES LIST */
+.search-area {
+  margin-bottom: 24px;
+}
+
+.search-area input {
+  width: 100%;
+  max-width: 420px;
+  height: 42px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 0 14px;
+  outline: none;
+}
+
+.search-area input:focus {
+  border-color: #ef2020;
+}
+
+.erro {
+  background: #ffe8e8;
+  border: 1px solid #f5b5b5;
+  color: #d62d2d;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.empty-message {
+  background: white;
+  border: 1px solid #e8e8e8;
+  color: #777;
+  padding: 24px;
+  border-radius: 10px;
+  text-align: center;
+}
+
 .categories-list {
   display: flex;
   flex-direction: column;
@@ -184,12 +275,20 @@ export default {
 }
 
 .status-badge {
-  background-color: #e5e7eb;
-  color: #6b7280;
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
+}
+
+.status-badge.ativo {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.status-badge.inativo {
+  background-color: #e5e7eb;
+  color: #6b7280;
 }
 
 .category-count {
@@ -200,17 +299,12 @@ export default {
   gap: 6px;
 }
 
-.category-count .icon {
-  font-size: 14px;
-}
-
 .category-actions {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-/* TOGGLE SWITCH */
 .toggle-container {
   display: flex;
   align-items: center;
@@ -232,10 +326,7 @@ export default {
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background-color: #e8e8e8;
   transition: 0.4s;
   border-radius: 28px;
@@ -261,7 +352,6 @@ input:checked + .slider:before {
   transform: translateX(22px);
 }
 
-/* ACTION BUTTONS */
 .btn-icon {
   background: none;
   border: none;
@@ -281,7 +371,6 @@ input:checked + .slider:before {
   background-color: #fee2e2;
 }
 
-/* RESPONSIVE */
 @media (max-width: 1024px) {
   .categories-header {
     flex-direction: column;

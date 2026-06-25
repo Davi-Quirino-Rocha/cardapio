@@ -5,31 +5,48 @@
         <h2>Pratos</h2>
         <p>Gerencie o cardápio do seu restaurante</p>
       </div>
+
       <button class="btn-novo-prato" @click="$router.push('/dashboard/pratos/novo')">
         + Novo prato
       </button>
     </div>
 
-    <!-- Search and Filter -->
     <div class="pratos-filters">
       <div class="search-box">
-        <input 
-          type="text" 
+        <input
+          type="text"
           placeholder="Buscar pratos"
           v-model="searchQuery"
         />
       </div>
+
       <div class="category-filter">
-        <input 
-          type="text" 
-          placeholder="Todas as categorias"
-          v-model="categoryFilter"
-        />
+        <select v-model="categoryFilter">
+          <option value="">Todas as categorias</option>
+          <option
+            v-for="categoria in categorias"
+            :key="categoria"
+            :value="categoria"
+          >
+            {{ categoria }}
+          </option>
+        </select>
       </div>
     </div>
 
-    <!-- Pratos Grid -->
-    <div class="pratos-grid-container">
+    <p v-if="erroCarregamento" class="erro">
+      {{ erroCarregamento }}
+    </p>
+
+    <p v-else-if="pratos.length === 0" class="empty-message">
+      Nenhum prato cadastrado.
+    </p>
+
+    <p v-else-if="filteredPratos.length === 0" class="empty-message">
+      Nenhum prato encontrado.
+    </p>
+
+    <div v-else class="pratos-grid-container">
       <div class="pratos-grid">
         <div class="prato-card" v-for="prato in filteredPratos" :key="prato.id">
           <div class="prato-image">
@@ -37,11 +54,24 @@
           </div>
 
           <div class="prato-info">
-            <h3>{{ prato.name }}</h3>
+            <div class="prato-title-row">
+              <h3>{{ prato.name }}</h3>
+
+              <span
+                class="status-badge"
+                :class="prato.active ? 'ativo' : 'inativo'"
+              >
+                {{ prato.active ? 'Ativo' : 'Inativo' }}
+              </span>
+            </div>
+
             <p class="prato-category">{{ prato.category }}</p>
             <p class="prato-price">R$ {{ prato.price }}</p>
-            
-            <button class="btn-editar" @click="$router.push('/dashboard/pratos/editar/' + prato.id)">
+
+            <button
+              class="btn-editar"
+              @click="$router.push('/dashboard/pratos/editar/' + prato.id)"
+            >
               Editar
             </button>
           </div>
@@ -53,18 +83,23 @@
 
 <script>
 import { salvarPratos, carregarPratos } from '@/services/pratosStorage'
+
 export default {
   name: 'PratosPage',
+
   data() {
     return {
       searchQuery: '',
       categoryFilter: '',
+      erroCarregamento: '',
+
       pratos: [
         {
           id: 1,
           name: 'Carpaccio de salmão',
           category: 'Entradas',
           price: '99,99',
+          active: true,
           image: require('@/assets/Carpaccio.svg')
         },
         {
@@ -72,6 +107,7 @@ export default {
           name: 'Panna cotta',
           category: 'Sobremesas',
           price: '99,99',
+          active: true,
           image: require('@/assets/Panna cotta.svg')
         },
         {
@@ -79,6 +115,7 @@ export default {
           name: 'Espaguete à carbonara',
           category: 'Massas',
           price: '99,99',
+          active: true,
           image: require('@/assets/espaguete.svg')
         },
         {
@@ -86,6 +123,7 @@ export default {
           name: 'Picanha na brasa',
           category: 'Carnes',
           price: '99,99',
+          active: false,
           image: require('@/assets/Picanha.svg')
         },
         {
@@ -93,6 +131,7 @@ export default {
           name: 'Bruschetta tradicional',
           category: 'Entradas',
           price: '99,99',
+          active: true,
           image: require('@/assets/Bruschetta.svg')
         },
         {
@@ -100,37 +139,46 @@ export default {
           name: 'Filé mignon',
           category: 'Carnes',
           price: '99,99',
+          active: false,
           image: require('@/assets/File mignon.svg')
         }
       ]
     }
   },
+
   computed: {
+    categorias() {
+      return [...new Set(this.pratos.map(prato => prato.category))]
+    },
+
     filteredPratos() {
+      const termoBusca = this.searchQuery.toLowerCase().trim()
+      const categoriaSelecionada = this.categoryFilter.toLowerCase().trim()
+
       return this.pratos.filter(prato => {
-        const matchName = prato.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-        const matchCategory = prato.category.toLowerCase().includes(this.categoryFilter.toLowerCase()) || this.categoryFilter === ''
+        const matchName = prato.name.toLowerCase().includes(termoBusca)
+        const matchCategory =
+          !categoriaSelecionada ||
+          prato.category.toLowerCase() === categoriaSelecionada
+
         return matchName && matchCategory
       })
     }
   },
-  methods: {
-    openNewPratoModal() {
-      alert('Modal para criar novo prato')
-    },
-    editPrato(id) {
-      alert(`Editando prato ${id}`)
-    }
-  },
-  mounted() {
-  const pratosSalvos = carregarPratos()
 
-  if (pratosSalvos) {
-    this.pratos = pratosSalvos
-  } else {
-    salvarPratos(this.pratos)
+  mounted() {
+    try {
+      const pratosSalvos = carregarPratos()
+
+      if (pratosSalvos && Array.isArray(pratosSalvos)) {
+        this.pratos = pratosSalvos
+      } else {
+        salvarPratos(this.pratos)
+      }
+    } catch (error) {
+      this.erroCarregamento = 'Falha ao consultar pratos.'
+    }
   }
-}
 }
 </script>
 
@@ -140,7 +188,6 @@ export default {
   overflow-y: auto;
 }
 
-/* PRATOS HEADER */
 .pratos-header {
   display: flex;
   justify-content: space-between;
@@ -176,7 +223,6 @@ export default {
   background-color: #d91a1a;
 }
 
-/* FILTERS */
 .pratos-filters {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -185,7 +231,7 @@ export default {
 }
 
 .search-box input,
-.category-filter input {
+.category-filter select {
   width: 100%;
   padding: 14px 16px;
   border: 1px solid #e8e8e8;
@@ -194,26 +240,42 @@ export default {
   color: #666;
   outline: none;
   transition: border-color 0.3s;
+  background: white;
 }
 
-.search-box input::placeholder,
-.category-filter input::placeholder {
+.search-box input::placeholder {
   color: #ccc;
 }
 
 .search-box input:focus,
-.category-filter input:focus {
+.category-filter select:focus {
   border-color: #ef2020;
 }
 
-/* PRATOS GRID CONTAINER */
+.erro {
+  background: #ffe8e8;
+  border: 1px solid #f5b5b5;
+  color: #d62d2d;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.empty-message {
+  background: white;
+  border: 1px solid #e8e8e8;
+  color: #777;
+  padding: 24px;
+  border-radius: 10px;
+  text-align: center;
+}
+
 .pratos-grid-container {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
-/* PRATOS GRID - 3 COLUNAS */
 .pratos-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -265,11 +327,35 @@ export default {
   flex: 1;
 }
 
+.prato-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
 .prato-info h3 {
   font-size: 16px;
   font-weight: 600;
   color: #1a1a1a;
-  margin-bottom: 4px;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.status-badge.ativo {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.status-badge.inativo {
+  background-color: #e5e7eb;
+  color: #6b7280;
 }
 
 .prato-category {
@@ -304,7 +390,6 @@ export default {
   background-color: #fce4e4;
 }
 
-/* RESPONSIVE */
 @media (max-width: 1024px) {
   .pratos-grid {
     grid-template-columns: repeat(2, 1fr);

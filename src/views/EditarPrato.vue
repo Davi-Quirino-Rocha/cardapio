@@ -4,6 +4,14 @@
       <h1>Editar prato</h1>
     </div>
 
+    <p v-if="errors.geral" class="erro-geral">
+      {{ errors.geral }}
+    </p>
+
+    <p v-if="mensagemSucesso" class="sucesso">
+      {{ mensagemSucesso }}
+    </p>
+
     <form class="form-prato" @submit.prevent="salvarPrato">
       <section class="card">
         <h3>Informações básicas</h3>
@@ -20,30 +28,44 @@
               <input type="file" hidden accept="image/png, image/jpeg, image/webp" @change="handleImageUpload" />
             </label>
             <p>PNG, JPG ou WEBP até 5MB</p>
+            <p v-if="errors.imagem" class="erro">{{ errors.imagem }}</p>
           </div>
         </div>
 
         <div class="form-group">
           <label>Nome do prato</label>
-          <input v-model="form.nome" type="text" />
+          <input v-model="form.nome" type="text" :class="{ 'input-error': errors.nome }" />
+          <p v-if="errors.nome" class="erro">{{ errors.nome }}</p>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Categoria</label>
-            <input v-model="form.categoria" type="text" />
+            <select
+                v-model="form.categoria"
+                :class="{ 'input-error': errors.categoria }"
+            >
+                <option value="">Selecione uma categoria</option>
+                <option>Massas</option>
+                <option>Carnes</option>
+                <option>Bebidas</option>
+                <option>Sobremesas</option>
+            </select>
+            <p v-if="errors.categoria" class="erro">{{ errors.categoria }}</p>
           </div>
 
           <div class="form-group">
             <label>Preço</label>
-            <input v-model="form.preco" type="text" />
+            <input v-model="form.preco" type="text" :class="{ 'input-error': errors.preco }" />
+            <p v-if="errors.preco" class="erro">{{ errors.preco }}</p>
           </div>
         </div>
 
         <div class="form-group">
           <label>Descrição</label>
-          <textarea v-model="form.descricao" maxlength="500"></textarea>
+          <textarea v-model="form.descricao" maxlength="500" :class="{ 'input-error': errors.descricao }"></textarea>
           <small>Máximo 500 caracteres</small>
+          <p v-if="errors.descricao" class="erro">{{ errors.descricao }}</p>
         </div>
       </section>
 
@@ -76,8 +98,9 @@
 
         <div class="form-group">
           <label>Ordem de exibição</label>
-          <input v-model="form.ordem" type="number" />
+          <input v-model="form.ordem" type="number" :class="{ 'input-error': errors.ordem }" />
           <small>Pratos com menor número aparecem primeiro</small>
+          <p v-if="errors.ordem" class="erro">{{ errors.ordem }}</p>
         </div>
 
         <div class="form-group">
@@ -113,6 +136,17 @@ export default {
   data() {
     return {
       imagemPreview: '',
+      mensagemSucesso: '',
+
+      errors: {
+        nome: '',
+        categoria: '',
+        preco: '',
+        descricao: '',
+        ordem: '',
+        imagem: '',
+        geral: ''
+      },
 
       form: {
         nome: '',
@@ -131,39 +165,129 @@ export default {
 
   mounted() {
     const id = Number(this.$route.params.id)
-
     const pratosSalvos = carregarPratos() || []
 
     this.pratos = pratosSalvos
 
-    const pratoEncontrado = this.pratos.find((prato) => prato.id === id)
+    const pratoEncontrado = this.pratos.find(prato => prato.id === id)
 
-    if (pratoEncontrado) {
-      this.form.nome = pratoEncontrado.name || pratoEncontrado.nome
-      this.form.categoria = pratoEncontrado.category || pratoEncontrado.categoria
-      this.form.preco = pratoEncontrado.price || pratoEncontrado.preco
-      this.form.descricao = pratoEncontrado.descricao || ''
-      this.form.ativo = pratoEncontrado.ativo ?? true
-      this.form.destaque = pratoEncontrado.destaque ?? false
-      this.form.ordem = pratoEncontrado.ordem || 1
-      this.form.observacoes = pratoEncontrado.observacoes || ''
-      this.imagemPreview = pratoEncontrado.image || pratoEncontrado.imagem
+    if (!pratoEncontrado) {
+      this.errors.geral = 'Prato não encontrado.'
+      return
     }
+
+    this.form.nome = pratoEncontrado.name || pratoEncontrado.nome || ''
+    this.form.categoria = pratoEncontrado.category || pratoEncontrado.categoria || ''
+    this.form.preco = pratoEncontrado.price || pratoEncontrado.preco || ''
+    this.form.descricao = pratoEncontrado.descricao || ''
+    this.form.ativo = pratoEncontrado.ativo ?? pratoEncontrado.active ?? true
+    this.form.destaque = pratoEncontrado.destaque ?? false
+    this.form.ordem = pratoEncontrado.ordem || 1
+    this.form.observacoes = pratoEncontrado.observacoes || ''
+    this.imagemPreview = pratoEncontrado.image || pratoEncontrado.imagem || ''
   },
 
   methods: {
+    limparErros() {
+      this.errors = {
+        nome: '',
+        categoria: '',
+        preco: '',
+        descricao: '',
+        ordem: '',
+        imagem: '',
+        geral: ''
+      }
+
+      this.mensagemSucesso = ''
+    },
+
     handleImageUpload(event) {
       const file = event.target.files[0]
 
       if (!file) return
 
+      const tiposPermitidos = ['image/png', 'image/jpeg', 'image/webp']
+
+      if (!tiposPermitidos.includes(file.type)) {
+        this.errors.imagem = 'A imagem deve ser PNG, JPG ou WEBP.'
+        return
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        this.errors.imagem = 'A imagem deve ter no máximo 5MB.'
+        return
+      }
+
+      this.errors.imagem = ''
       this.imagemPreview = URL.createObjectURL(file)
+    },
+
+    validarPrato() {
+      this.limparErros()
+
+      let valido = true
+      const nome = this.form.nome.trim()
+      const categoria = this.form.categoria.trim()
+      const preco = this.form.preco.trim()
+      const descricao = this.form.descricao.trim()
+
+      if (!nome) {
+        this.errors.nome = 'O nome do prato é obrigatório.'
+        valido = false
+      } else if (nome.length < 3) {
+        this.errors.nome = 'O nome do prato deve ter no mínimo 3 caracteres.'
+        valido = false
+      } else if (nome.length > 80) {
+        this.errors.nome = 'O nome do prato deve ter no máximo 80 caracteres.'
+        valido = false
+      }
+
+      if (!categoria) {
+        this.errors.categoria = 'A categoria é obrigatória.'
+        valido = false
+      }
+
+      if (!preco) {
+        this.errors.preco = 'O preço é obrigatório.'
+        valido = false
+      } else if (!/^\d+(,\d{2})?$/.test(preco)) {
+        this.errors.preco = 'Informe um preço válido. Ex: 29,90'
+        valido = false
+      }
+
+      if (!descricao) {
+        this.errors.descricao = 'A descrição do prato é obrigatória.'
+        valido = false
+      } else if (descricao.length < 10) {
+        this.errors.descricao = 'A descrição deve ter no mínimo 10 caracteres.'
+        valido = false
+      } else if (descricao.length > 500) {
+        this.errors.descricao = 'A descrição deve ter no máximo 500 caracteres.'
+        valido = false
+      }
+
+      if (!this.form.ordem || this.form.ordem < 1) {
+        this.errors.ordem = 'A ordem de exibição deve ser maior que zero.'
+        valido = false
+      }
+
+      return valido
     },
 
     salvarPrato() {
       const id = Number(this.$route.params.id)
 
-      const pratosAtualizados = this.pratos.map((prato) => {
+      const pratoExiste = this.pratos.some(prato => prato.id === id)
+
+      if (!pratoExiste) {
+        this.errors.geral = 'Prato não encontrado.'
+        return
+      }
+
+      if (!this.validarPrato()) return
+
+      const pratosAtualizados = this.pratos.map(prato => {
         if (prato.id === id) {
           return {
             ...prato,
@@ -176,6 +300,7 @@ export default {
             descricao: this.form.descricao,
             image: this.imagemPreview,
             imagem: this.imagemPreview,
+            active: this.form.ativo,
             ativo: this.form.ativo,
             destaque: this.form.destaque,
             ordem: this.form.ordem,
@@ -188,15 +313,18 @@ export default {
 
       salvarPratos(pratosAtualizados)
 
-      alert('Prato atualizado!')
-      this.$router.push('/dashboard/pratos')
+      this.mensagemSucesso = 'Prato atualizado com sucesso.'
+
+      setTimeout(() => {
+        this.$router.push('/dashboard/pratos')
+      }, 1000)
     }
   }
 }
 </script>
 
 <style scoped>
-.novo-prato-page {
+.editar-prato-page {
   max-width: 760px;
   margin: 50px auto;
 }
@@ -396,7 +524,7 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .novo-prato-page {
+  .editar-prato-page {
     margin: 30px 20px;
   }
 
@@ -437,5 +565,33 @@ export default {
 .btn-salvar img {
   width: 20px;
   height: 20px;
+}
+
+.input-error {
+  border-color: #d62d2d !important;
+}
+
+.erro {
+  color: #d62d2d;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.erro-geral {
+  background: #ffe8e8;
+  border: 1px solid #f5b5b5;
+  color: #d62d2d;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+
+.sucesso {
+  background: #e8f9ee;
+  border: 1px solid #b7ebc6;
+  color: #28a745;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
 }
 </style>

@@ -20,15 +20,24 @@
           v-model="email"
           type="email"
           placeholder="seu@email.com"
+          :class="{ 'input-error': errors.email }"
         />
 
-        <button @click="$router.push('/email-enviado')">
+        <p v-if="errors.email" class="erro">
+          {{ errors.email }}
+        </p>
+
+        <p v-if="mensagemSucesso" class="sucesso">
+          {{ mensagemSucesso }}
+        </p>
+
+        <button @click="enviarRecuperacao">
           Enviar link de recuperação
         </button>
 
         <router-link to="/login" class="back-link">
-            <img src="../assets/Seta.svg" alt="Seta">
-            <span>Voltar para o login</span>
+          <img src="../assets/Seta.svg" alt="Seta">
+          <span>Voltar para o login</span>
         </router-link>
       </div>
     </div>
@@ -41,13 +50,58 @@ export default {
 
   data() {
     return {
-      email: ''
+      email: '',
+      mensagemSucesso: '',
+      errors: {
+        email: ''
+      }
     }
   },
 
   methods: {
+    limparErros() {
+      this.errors.email = ''
+      this.mensagemSucesso = ''
+    },
+
+    validarEmail() {
+      this.limparErros()
+
+      if (!this.email.trim()) {
+        this.errors.email = 'O e-mail é obrigatório.'
+        return false
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email)) {
+        this.errors.email = 'Informe um e-mail válido.'
+        return false
+      }
+
+      return true
+    },
+
     enviarRecuperacao() {
-      console.log('Enviar recuperação para:', this.email)
+      if (!this.validarEmail()) return
+
+      /*
+        Simulação do FE01:
+        e-mail não cadastrado.
+
+        Quando tiver backend, essa validação vem da API.
+      */
+
+      const emailCadastrado = 'restaurante@exemplo.com'
+
+      if (this.email !== emailCadastrado) {
+        this.errors.email = 'E-mail não cadastrado.'
+        return
+      }
+
+      this.mensagemSucesso = 'Link de recuperação enviado para o e-mail cadastrado.'
+
+      setTimeout(() => {
+        this.$router.push('/email-enviado')
+      }, 1000)
     }
   }
 }
@@ -140,12 +194,28 @@ input {
   border-radius: 8px;
   padding: 0 12px;
   font-size: 14px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   outline: none;
 }
 
 input:focus {
   border-color: #ef2020;
+}
+
+.input-error {
+  border-color: #d62d2d;
+}
+
+.erro {
+  color: #d62d2d;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.sucesso {
+  color: #28a745;
+  font-size: 13px;
+  margin-bottom: 14px;
 }
 
 button {
@@ -169,7 +239,6 @@ button:hover {
   align-items: center;
   justify-content: center;
   gap: 8px;
-
   text-decoration: none;
   color: #64748b;
   transition: color 0.3s;
@@ -178,7 +247,6 @@ button:hover {
 .back-link img {
   width: 18px;
   height: 18px;
-
 }
 
 .back-link:hover {

@@ -36,9 +36,11 @@ import Sidebar from '../components/Sidebar.vue'
 
 export default {
   name: 'DashboardLayout',
+
   components: {
     Sidebar
   },
+
   computed: {
     pageTitle() {
       const titles = {
@@ -50,11 +52,22 @@ export default {
         '/dashboard/qrcode': 'QR Code',
         '/dashboard/preview': 'Preview'
       }
+
       return titles[this.$route.path] || 'Dashboard'
     }
   },
+
+  created() {
+    const usuarioAutenticado = localStorage.getItem('usuarioAutenticado')
+
+    if (usuarioAutenticado !== 'true') {
+      this.$router.push('/login')
+    }
+  },
+
   methods: {
     handleLogout() {
+      localStorage.removeItem('usuarioAutenticado')
       this.$router.push('/login')
     }
   }

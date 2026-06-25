@@ -71,7 +71,8 @@ const routes = [
         component: NovaCategoria
       },
       {
-        path: 'categorias/editar',
+        path: 'categorias/editar/:id',
+        name: 'EditarCategoria',
         component: EditarCategoria
       },
       {

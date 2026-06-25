@@ -5,13 +5,22 @@
       <p>Adicione um novo prato ao seu cardápio</p>
     </div>
 
+    <p v-if="mensagemSucesso" class="sucesso">
+      {{ mensagemSucesso }}
+    </p>
+
     <form class="form-prato" @submit.prevent="criarPrato">
       <section class="card">
         <h3>Informações básicas</h3>
 
         <div class="upload-area">
           <label class="upload-box">
-            <input type="file" accept="image/png, image/jpeg, image/webp" hidden>
+            <input
+              type="file"
+              accept="image/png, image/jpeg, image/webp"
+              hidden
+              @change="selecionarImagem"
+            />
             <span><img src="../assets/Download.svg" alt="Download" height="30px" width="30px"></span>
           </label>
 
@@ -19,6 +28,7 @@
             <button type="button" class="btn-upload">Escolher logo</button>
             <p>PNG, JPG ou WEBP até 5MB</p>
           </div>
+          <p v-if="errors.imagem" class="erro">{{ errors.imagem }}</p>
         </div>
 
         <div class="form-group">
@@ -27,19 +37,22 @@
             type="text" 
             v-model="form.nome"
             placeholder="Ex: Filé Mignon ao Molho Madeira"
+            :class="{ 'input-error': errors.nome }"
           >
+          <p v-if="errors.nome" class="erro">{{ errors.nome }}</p>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Categoria</label>
-            <select v-model="form.categoria">
+            <select v-model="form.categoria" :class="{ 'input-error': errors.categoria }">
               <option value="">Selecione uma categoria</option>
               <option>Massas</option>
               <option>Carnes</option>
               <option>Bebidas</option>
               <option>Sobremesas</option>
             </select>
+            <p v-if="errors.categoria" class="erro">{{ errors.categoria }}</p>
           </div>
 
           <div class="form-group">
@@ -48,7 +61,9 @@
               type="text" 
               v-model="form.preco"
               placeholder="R$ 0,00"
+              :class="{ 'input-error': errors.preco }"
             >
+            <p v-if="errors.preco" class="erro">{{ errors.preco }}</p>
           </div>
         </div>
 
@@ -57,8 +72,10 @@
           <textarea 
             v-model="form.descricao"
             maxlength="500"
+            :class="{ 'input-error': errors.descricao }"
           ></textarea>
           <small>Máximo 500 caracteres</small>
+          <p v-if="errors.descricao" class="erro">{{ errors.descricao }}</p>
         </div>
       </section>
 
@@ -89,8 +106,13 @@
 
         <div class="form-group">
           <label>Ordem de exibição</label>
-          <input type="number" v-model="form.ordem">
+          <input
+            type="number"
+            v-model="form.ordem"
+            :class="{ 'input-error': errors.ordem }"
+          >
           <small>Pratos com menor número aparecem primeiro</small>
+          <p v-if="errors.ordem" class="erro">{{ errors.ordem }}</p>
         </div>
 
         <div class="form-group">
@@ -104,7 +126,9 @@
       </section>
 
       <div class="actions">
-        <button type="button" class="btn-cancelar">Cancelar</button>
+        <button type="button" class="btn-cancelar" @click="$router.push('/dashboard/pratos')">
+          Cancelar
+        </button>
         <button type="submit" class="btn-criar">
           <img src="../assets/Salvar.svg" alt="Salvar"> Criar prato
         </button>
@@ -116,13 +140,26 @@
 <script>
 export default {
   name: 'NovoPrato',
+
   data() {
     return {
+      mensagemSucesso: '',
+
+      errors: {
+        nome: '',
+        categoria: '',
+        preco: '',
+        descricao: '',
+        ordem: '',
+        imagem: ''
+      },
+
       form: {
         nome: '',
         categoria: '',
         preco: '',
         descricao: '',
+        imagem: null,
         ativo: true,
         destaque: false,
         ordem: 1,
@@ -130,9 +167,101 @@ export default {
       }
     }
   },
+
   methods: {
+    limparErros() {
+      this.errors = {
+        nome: '',
+        categoria: '',
+        preco: '',
+        descricao: '',
+        ordem: '',
+        imagem: ''
+      }
+
+      this.mensagemSucesso = ''
+    },
+
+    selecionarImagem(event) {
+      const file = event.target.files[0]
+
+      if (!file) return
+
+      const tiposPermitidos = ['image/png', 'image/jpeg', 'image/webp']
+
+      if (!tiposPermitidos.includes(file.type)) {
+        this.errors.imagem = 'A imagem deve ser PNG, JPG ou WEBP.'
+        return
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        this.errors.imagem = 'A imagem deve ter no máximo 5MB.'
+        return
+      }
+
+      this.errors.imagem = ''
+      this.form.imagem = file
+    },
+
+    validarPrato() {
+      this.limparErros()
+
+      let valido = true
+      const nome = this.form.nome.trim()
+      const preco = this.form.preco.trim()
+      const descricao = this.form.descricao.trim()
+
+      if (!nome) {
+        this.errors.nome = 'O nome do prato é obrigatório.'
+        valido = false
+      } else if (nome.length < 3) {
+        this.errors.nome = 'O nome do prato deve ter no mínimo 3 caracteres.'
+        valido = false
+      } else if (nome.length > 80) {
+        this.errors.nome = 'O nome do prato deve ter no máximo 80 caracteres.'
+        valido = false
+      }
+
+      if (!this.form.categoria) {
+        this.errors.categoria = 'Selecione uma categoria.'
+        valido = false
+      }
+
+      if (!preco) {
+        this.errors.preco = 'O preço é obrigatório.'
+        valido = false
+      } else if (!/^\d+(,\d{2})?$/.test(preco)) {
+        this.errors.preco = 'Informe um preço válido. Ex: 29,90'
+        valido = false
+      }
+
+      if (!descricao) {
+        this.errors.descricao = 'A descrição do prato é obrigatória.'
+        valido = false
+      } else if (descricao.length < 10) {
+        this.errors.descricao = 'A descrição deve ter no mínimo 10 caracteres.'
+        valido = false
+      } else if (descricao.length > 500) {
+        this.errors.descricao = 'A descrição deve ter no máximo 500 caracteres.'
+        valido = false
+      }
+
+      if (!this.form.ordem || this.form.ordem < 1) {
+        this.errors.ordem = 'A ordem de exibição deve ser maior que zero.'
+        valido = false
+      }
+
+      return valido
+    },
+
     criarPrato() {
-      console.log(this.form)
+      if (!this.validarPrato()) return
+
+      this.mensagemSucesso = 'Prato cadastrado com sucesso.'
+
+      setTimeout(() => {
+        this.$router.push('/dashboard/pratos')
+      }, 1000)
     }
   }
 }
@@ -346,5 +475,24 @@ export default {
     grid-template-columns: 1fr;
     gap: 0;
   }
+}
+
+.input-error {
+  border-color: #d62d2d !important;
+}
+
+.erro {
+  color: #d62d2d;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.sucesso {
+  background: #e8f9ee;
+  border: 1px solid #b7ebc6;
+  color: #28a745;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
 }
 </style>
