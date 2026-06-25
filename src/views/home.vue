@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- Hero Section -->
-    <section class="hero">
+    <section id="inicio" class="hero">
       <div class="hero-content">
         <h1>Crie e gerencie o cardápio digital do seu restaurante com autonomia</h1>
         <p>Atualize pratos, categorias, identidade visual e publique seu menu por link e QR Code sem depender de programador.</p>
@@ -36,7 +36,7 @@
     </section>
 
     <!-- Features Section -->
-    <section class="features">
+    <section id="como-funciona" class="features">
       <h2>Como funciona</h2>
       <p class="features-subtitle">Crie seu cardápio digital em 3 passos simples</p>
       <div class="features-grid">
@@ -59,7 +59,7 @@
     </section>
 
     <!-- Resources Section -->
-    <section class="resources">
+    <section id="recursos" class="resources">
       <h2>Todos os recursos que você precisa</h2>
       <p class="resources-subtitle">Ferramental completo para gerenciar seu cardápio digital</p>
       <div class="resources-grid">
@@ -97,7 +97,7 @@
     </section>
 
     <!-- Video/Demo Section -->
-    <section class="demo">
+    <section id="demonstracao" class="demo">
       <h2>Veja o Cardápio.io em ação</h2>
       <p>Interface moderna e fácil de usar</p>
       <div class="demo-content">
@@ -131,7 +131,7 @@
     </section>
 
     <!-- Final CTA Section -->
-    <section class="cta">
+    <section id="contato" class="cta">
       <h2>Pronto para modernizar seu restaurante?</h2>
       <p>Junte-se a mais de 1.500 restaurantes que já usam o Cardápio.io</p>
       <button class="btn-primary" @click="$router.push('/login')">Juntar-se</button>
