@@ -8,10 +8,6 @@
       {{ errors.geral }}
     </p>
 
-    <p v-if="mensagemSucesso" class="sucesso">
-      {{ mensagemSucesso }}
-    </p>
-
     <form class="form-prato" @submit.prevent="salvarPrato">
       <section class="card">
         <h3>Informações básicas</h3>
@@ -112,7 +108,9 @@
           />
         </div>
       </section>
-
+      <p v-if="mensagemSucesso" class="sucesso">
+            {{ mensagemSucesso }}
+          </p>
       <div class="actions">
         <button type="button" class="btn-cancelar" @click="$router.push('/dashboard/pratos')">
           Cancelar
@@ -123,6 +121,7 @@
           <span>Salvar</span>
         </button>
       </div>
+
     </form>
   </div>
 </template>

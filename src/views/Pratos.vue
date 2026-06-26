@@ -74,6 +74,12 @@
             >
               Editar
             </button>
+            <button
+              class="btn-excluir"
+              @click="excluirPrato(prato.id)"
+            >
+              Excluir
+            </button>
           </div>
         </div>
       </div>
@@ -178,8 +184,20 @@ export default {
     } catch (error) {
       this.erroCarregamento = 'Falha ao consultar pratos.'
     }
+  },
+
+    methods: {
+    excluirPrato(id) {
+      const confirmar = confirm('Tem certeza que deseja excluir este prato?')
+
+      if (!confirmar) return
+
+      this.pratos = this.pratos.filter(prato => prato.id !== id)
+      salvarPratos(this.pratos)
+    }
   }
 }
+
 </script>
 
 <style scoped>
@@ -413,5 +431,23 @@ export default {
   .pratos-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.btn-excluir {
+  background: white;
+  color: #ef2020;
+  border: 1px solid #ef2020;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+
+.btn-excluir:hover {
+  background-color: #ef2020;
+  color: white;
 }
 </style>

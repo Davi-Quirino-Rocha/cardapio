@@ -94,6 +94,8 @@
 </template>
 
 <script>
+const STORAGE_KEY = 'categorias'
+
 export default {
   name: 'CategoriasPage',
 
@@ -127,13 +129,28 @@ export default {
     }
   },
 
+  mounted() {
+    const categoriasSalvas = localStorage.getItem(STORAGE_KEY)
+
+    if (categoriasSalvas) {
+      this.categories = JSON.parse(categoriasSalvas)
+    } else {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.categories))
+    }
+  },
+
   methods: {
+    salvarCategorias() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.categories))
+    },
+
     deleteCategory(id) {
       const confirmar = confirm('Tem certeza que deseja deletar esta categoria?')
 
       if (!confirmar) return
 
       this.categories = this.categories.filter(category => category.id !== id)
+      this.salvarCategorias()
     },
 
     toggleCategory(id) {
@@ -141,7 +158,10 @@ export default {
 
       if (!category) {
         this.erroCarregamento = 'Categoria não encontrada.'
+        return
       }
+
+      this.salvarCategorias()
     }
   }
 }

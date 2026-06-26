@@ -21,28 +21,28 @@
         <div class="stat-icon blue"><img src="../assets/Pastas.svg" alt="pasta"></div>
         <div class="stat-info">
           <p class="stat-label">Categorias</p>
-          <p class="stat-number">8</p>
+          <p class="stat-number">{{ totalCategorias }}</p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon red"><img src="../assets/Frame.svg" alt="garfo"></div>
         <div class="stat-info">
           <p class="stat-label">Pratos Totais</p>
-          <p class="stat-number">42</p>
+          <p class="stat-number">{{ totalPratos }}</p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon green"><img src="../assets/Olho.svg" alt="olho"></div>
         <div class="stat-info">
           <p class="stat-label">Pratos Ativos</p>
-          <p class="stat-number">38</p>
+          <p class="stat-number">{{ pratosAtivos }}</p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon gray"><img src="../assets/OlhoRisco.svg" alt="risco"></div>
         <div class="stat-info">
           <p class="stat-label">Pratos Inativos</p>
-          <p class="stat-number">4</p>
+          <p class="stat-number">{{ pratosInativos }}</p>
         </div>
       </div>
     </div>
@@ -84,7 +84,12 @@
                 <p class="category-name">{{ cat.name }}</p>
                 <p class="category-count">{{ cat.count }} prato{{ cat.count > 1 ? 's' : '' }}</p>
               </div>
-              <span :class="['status-badge', cat.status.toLowerCase()]">{{ cat.status }}</span>
+              <span
+                class="status-badge"
+                :class="cat.status === 'Ativo' ? 'ativo' : 'inativo'"
+              >
+                {{ cat.status }}
+              </span>
             </div>
           </div>
         </div>
@@ -155,26 +160,17 @@
 </template>
 
 <script>
+import { carregarPratos } from '@/services/pratosStorage'
+
+const CATEGORIAS_KEY = 'categorias'
+
 export default {
   name: 'DashboardPage',
 
   data() {
     return {
-      recentDishes: [
-        { id: 1, name: 'Filé Mignon', category: 'Carnes', time: '2 horas atrás' },
-        { id: 2, name: 'Risoto de cogumelos', category: 'Massas', time: '5 horas atrás' },
-        { id: 3, name: 'Filé Mignon', category: 'Carnes', time: '1 dia atrás' },
-        { id: 4, name: 'Carpaccio de Salmão', category: 'Entradas', time: '2 horas atrás' }
-      ],
-
-      categories: [
-        { id: 1, name: 'Entradas', count: 6, status: 'Ativo' },
-        { id: 2, name: 'Massas', count: 8, status: 'Ativo' },
-        { id: 3, name: 'Carnes', count: 10, status: 'Inativo' },
-        { id: 4, name: 'Peixes', count: 4, status: 'Ativo' },
-        { id: 5, name: 'Sobremesas', count: 5, status: 'Ativo' },
-        { id: 6, name: 'Bebidas', count: 7, status: 'Inativo' }
-      ],
+      pratos: [],
+      categoriasSalvas: [],
 
       checklist: {
         logo: true,
@@ -187,12 +183,67 @@ export default {
   },
 
   computed: {
+    totalCategorias() {
+      return this.categories.length
+    },
+
+    totalPratos() {
+      return this.pratos.length
+    },
+
+    pratosAtivos() {
+      return this.pratos.filter(prato => prato.active).length
+    },
+
+    pratosInativos() {
+      return this.pratos.filter(prato => !prato.active).length
+    },
+
+    recentDishes() {
+      return this.pratos.slice(-4).reverse()
+    },
+
+    categories() {
+      return this.categoriasSalvas.map(categoria => {
+        const pratosDaCategoria = this.pratos.filter(
+          prato => prato.category === categoria.name
+        )
+
+        return {
+          id: categoria.id,
+          name: categoria.name,
+          count: pratosDaCategoria.length,
+          status: categoria.active ? 'Ativo' : 'Inativo'
+        }
+      })
+    },
+
     completedItems() {
       return Object.values(this.checklist).filter(v => v).length
     },
 
     progressPercentage() {
       return (this.completedItems / 5) * 100
+    }
+  },
+
+  mounted() {
+    this.carregarDados()
+  },
+
+  activated() {
+    this.carregarDados()
+  },
+
+  methods: {
+    carregarDados() {
+      this.pratos = carregarPratos() || []
+
+      const categoriasLocalStorage = localStorage.getItem(CATEGORIAS_KEY)
+
+      if (categoriasLocalStorage) {
+        this.categoriasSalvas = JSON.parse(categoriasLocalStorage)
+      }
     }
   }
 }
